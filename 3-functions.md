@@ -63,6 +63,24 @@ const burger = {
 newBurger(burger);
 ```
 
+**Alternative**
+
+If the arguments are all of the same type, consider using the **rest** operator to clubs all of them into a single array.
+
+For example, a list of arguments that are number to be added can be condensed using the rest operator.
+
+```javascript
+// Bad!
+function add() {
+  return [...arguments].reduce((a, b) => a + b, 0);
+}
+
+// Good!
+function add(...args) {
+  return args.reduce((a, b) => a + b, 0);
+}
+```
+
 ## 3. Function names should say what they do
 
 ```javascript
@@ -89,6 +107,10 @@ A good example is `copyArray` which means that it is a function that copies an a
 **Verb:** A word used to describe an action, state, or occurrence, and forming the main part of the predicate of a sentence, such as _hear_, _become_, _happen_. 
 
 Verbs are "doing" words. Verbs can express physical actions (e.g., play, dive), mental actions (e.g., think, guess), or states of being (e.g., exist, am).
+
+**Longer names are OK**
+
+Longer names are needed to convey all the information that we need to know. Follow the javascript convention - camelCase for variables, functions, etc and PascalCase for constructor functions and classes
 
 ## 4. Avoid side effects - Global Variables
 
