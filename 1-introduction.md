@@ -4,6 +4,8 @@ Learn some core concepts of clean code.
 
 [Link to series of articles](https://dev.to/carlillo/clean-code-applied-to-javascript-part-i-before-your-start-16ic)
 
+[Link to Ryan's repo](https://github.com/ryanmcdermott/clean-code-javascript)
+
 ## What is a "Code Smell"?
 
 > A code smell is a surface indication that usually corresponds

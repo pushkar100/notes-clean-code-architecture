@@ -1,4 +1,4 @@
-# Conditional Complexity
+# Conditionals & Loops
 
 **Avoid Conditional Complexity**
 
@@ -6,7 +6,7 @@ Conditional complexity causes code to be more complicated to understand and ther
 
 ## 1. Don’t use flags as function parameters
 
-The first advice to avoid complexity is to eliminate flags as parameters of a function 
+The first advice to avoid complexity is to eliminate flags as parameters of a function. Flags tell your user that this function does more than one thing. Functions should do one thing. Split out your functions if they are following different code paths based on a boolean.
 
 Instead, we must create two functions that implement the logic of our problem, instead of using a single function in which we have the logic of the two functionalities since they are different
 
@@ -90,7 +90,36 @@ function getPayAmount() {
 }
 ```
 
-## 4. Null-Object Pattern
+## 4.Avoid type checking
+
+JavaScript is untyped, which means your functions can take any type of argument. Sometimes you are bitten by this freedom and it becomes tempting to do type-checking in your functions. There are many ways to avoid having to do this. The first thing to consider is "consistent APIs".
+
+```javascript
+// Bad!
+function travelToTexas(vehicle) {
+  if (vehicle instanceof Bicycle) {
+    vehicle.pedal(this.currentLocation, new Location("texas"));
+  } else if (vehicle instanceof Car) {
+    vehicle.drive(this.currentLocation, new Location("texas"));
+  }
+}
+
+// Good!
+function travelToTexas(vehicle) {
+  vehicle.move(this.currentLocation, new Location("texas"));
+}
+class Vehicle {
+  move(prevLocation, newLocation) {
+    // Logic to drive or pedail
+  }
+}
+```
+
+**Note:**
+
+If you are forced to type check for primitives very often, considering using a type checker tool such as typescript or flow
+
+## 5. Null-Object Pattern
 
 Common mistake: Constant checking of whether the object is null and depending on that check a default action is shown or not.
 
@@ -137,7 +166,7 @@ function getAnimal(type) {
 // Returns ["bark", null]
 ```
 
-## 5. Remove conditionals using polymorphism
+## 6. Remove conditionals using polymorphism
 
 Common mistake: Using `switch` control structure as an alternative to `if`
 
@@ -196,7 +225,7 @@ class Bus extends Auto {
 speed = auto.getProperty();
 ```
 
-## 6. Remove conditionals using Strategy pattern (composition)/Command pattern
+## 7. Remove conditionals using Strategy pattern (composition)/Command pattern
 
 Another way to solve the `switch` / `if` problem
 
@@ -246,3 +275,22 @@ function catastropheStrategy(param) {
   console.log("Catastrophe: " + param);
 }
 ```
+
+## 8. Don't over-optimize loops
+
+Modern browsers do a lot of optimization under-the-hood at runtime. A lot of times, if you are optimizing then you are just wasting your time
+
+```javascript
+// Bad!
+// On old browsers, each iteration with uncached `list.length` would be costly
+// because of `list.length` recomputation. In modern browsers, this is optimized.
+for (let i = 0, len = list.length; i < len; i++) {
+  // ...
+}
+
+// Good!
+for (let i = 0; i < list.length; i++) {
+  // ...
+}
+```
+

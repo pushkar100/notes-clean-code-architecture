@@ -20,6 +20,24 @@ const x // This refers to the user information
 const user
 ```
 
+```javascript
+// Bad!
+locations.forEach(l => {
+  doSomething();
+  // ...
+  // ...
+  createMap(l); // What is `l` again?
+})
+
+// Good!
+locations.forEach(location => {
+  doSomething();
+  // ...
+  // ...
+  createMap(location);
+})
+```
+
 ## 2. Use pronounceable names
 
 In order to reveal the intention of the variable, one must be able to read it without much effort. Do not make me think about matters that are not the focus of my business logic
@@ -49,6 +67,36 @@ class Customer {
   private Date generationTimestamp;
   private Date modificationTimestamp;
 }
+```
+
+```javascript
+// Bad!
+const yyyymmdstr = moment().format("YYYY/MM/DD");
+
+// Good!
+const currentDate = moment().format("YYYY/MM/DD");
+```
+
+**Destructuring:**
+
+Make use of destructuring (extraction of values) in arrays and objects to use meaningful and pronounceable names. Instead of using the indices or keys, we can give the item a name!
+
+```javascript
+// Bad!
+const address = "One Infinite Loop, Cupertino 95014";
+const cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
+saveCityZipCode(
+  address.match(cityZipCodeRegex)[1],
+  address.match(cityZipCodeRegex)[2]
+);
+```
+
+```javascript
+// Good!
+const address = "One Infinite Loop, Cupertino 95014";
+const cityZipCodeRegex = /^[^,\\]+[,\\\s]+(.+?)\s*(\d{5})?$/;
+const [_, city, zipCode] = address.match(cityZipCodeRegex) || [];
+saveCityZipCode(city, zipCode);
 ```
 
 ## 3. Don’t use the variable’s type in the name
@@ -132,6 +180,8 @@ NEVER have numbers and text strings written in the source code (*hardcode*) that
 **Solution:**
 
 Those magic numbers or chains must be frequently stored in constants which receive a name that specifies the intentionality of that magic number.
+
+We can also term this tip as _"Use searchable names"_
 
 ```javascript
 // Bad! Magic number and magic string

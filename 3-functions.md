@@ -2,6 +2,8 @@
 
 ## 1. Use default arguments instead of short circuiting or conditionals
 
+Be aware that if you use them, your function will only provide default values for `undefined` arguments. Other falsy values will not be replaced as it happens while short circuiting 
+
 ```javascript
 // Bad! But was a necessity before ES2015...
 function setName(name) {
@@ -19,6 +21,10 @@ function setName(name = 'Juan Palomo') {
 1. An adequate number could be 2 or less, but don't obsess over it
 2. If you need to increase the arguments, use an object as an "options" parameter to group together multiple arguments. 
 3. Using an object to grouped parameters has an added benefit in the sense that it creates a higher-level abstraction, closer to business logic
+
+**Note:**
+
+Three arguments should be avoided if possible. Anything more than that should be consolidated!
 
 ```javascript
 // Bad!
@@ -46,7 +52,26 @@ const burger = {
 newBurger(burger);
 ```
 
-## 3. Avoid side effects - Global Variables
+## 3. Function names should say what they do
+
+```javascript
+// Bad!
+function addToDate(date, month) {
+  // ...
+}
+const date = new Date();
+// It's hard to tell from the function name what is added
+addToDate(date, 1);
+
+// Good!
+function addMonthToDate(month, date) {
+  // ...
+}
+const date = new Date();
+addMonthToDate(1, date); // More readable
+```
+
+## 4. Avoid side effects - Global Variables
 
 Anything that is outside the scope of the function that is affected or utilized by it is a side-effect. Pure functions depend on input only - they don't have side-effects.
 
@@ -85,7 +110,7 @@ console.log(fruits); // 'Banana Apple';
 console.log(newFruits); // ['Banana', 'Apple'];
 ```
 
-## 4. Avoid side effects - Objects Mutables
+## 5. Avoid side effects - Objects Mutables
 
 Similar to global variable changes, but when dealing with objects, be careful not to mutate them. This can occur even if they are passed as arguments and not accessed via scope
 
@@ -107,7 +132,7 @@ const addItemToCart = (cart, item) => {
 };
 ```
 
-## 5. Functions should do one thing
+## 6. Functions should do one thing
 
 Each function must do only one conceptual task. A set of small tasks together will make a larger task but the tasks should not be intermingled, this is known as **coupling**.
 
@@ -140,13 +165,15 @@ function emailActiveCustomers(customers) {
 }
 ```
 
-## 6. Functions should only be one level of abstraction
+## 7. Functions should only be one level of abstraction
 
 Each function should only have a single level of abstraction.
 
 **Solution:**
 
 Identify the different levels of abstraction and create functions that meet the requirements using the other clean coding techniques for functions listed above
+
+When you have more than one level of abstraction your function is usually doing too much. Splitting up functions leads to reusability and easier testing.
 
 ```javascript
 // Bad! tokenizer, Lexer, parser, .. all together
@@ -196,7 +223,7 @@ function parseBetterJSAlternative(code) {
 }
 ```
 
-## 7. Favor functional programming over imperative programming
+## 8. Favor functional programming over imperative programming
 
 **Advantages:**
 
@@ -241,7 +268,7 @@ const total = items
   .reduce((total, price) => total + price);
 ```
 
-## 8. Use method chaining
+## 9. Use method chaining
 
 Functions that do a single task, with a single level of abstraction and without side effects need to be combined together to perform complex tasks (i.e combination of several of them). Therefore, it develops chained methods since they allow a more readable code
 
@@ -287,3 +314,122 @@ const car = new Car('WV','Jetta','gray')
   .save();
 ```
 
+## 10. Remove duplicate code
+
+Do your absolute best to avoid duplicate code. Duplicate code is bad because it means that there's more than one place to alter something if you need to change some logic.
+
+Oftentimes you have duplicate code because you have two or more slightly different things, that share a lot in common, but their differences force you to have two or more separate functions that do much of the same things. Removing duplicate code means creating an abstraction that can handle this set of different things with just one function/module/class.
+
+**Note:**
+
+Getting the abstraction right is critical, that's why you should follow the _SOLID_ principles laid out in the Classes section. Bad abstractions can be worse than duplicate code, so be careful!
+
+```javascript
+// Bad!
+function showDeveloperList(developers) {
+  developers.forEach(developer => {
+    const expectedSalary = developer.calculateExpectedSalary();
+    const experience = developer.getExperience();
+    const githubLink = developer.getGithubLink();
+    const data = {
+      expectedSalary,
+      experience,
+      githubLink
+    };
+
+    render(data);
+  });
+}
+
+function showManagerList(managers) {
+  managers.forEach(manager => {
+    const expectedSalary = manager.calculateExpectedSalary();
+    const experience = manager.getExperience();
+    const portfolio = manager.getMBAProjects();
+    const data = {
+      expectedSalary,
+      experience,
+      portfolio
+    };
+
+    render(data);
+  });
+}
+```
+
+```javascript
+// Good!
+function showEmployeeList(employees) {
+  employees.forEach(employee => {
+    const expectedSalary = employee.calculateExpectedSalary();
+    const experience = employee.getExperience();
+
+    const data = {
+      expectedSalary,
+      experience
+    };
+
+    switch (employee.type) {
+      case "manager":
+        data.portfolio = employee.getMBAProjects();
+        break;
+      case "developer":
+        data.githubLink = employee.getGithubLink();
+        break;
+    }
+
+    render(data);
+  });
+}
+```
+
+## 11. Set default objects inside functions with `Object.assign`
+
+Instead of using short-circuiting to enable defaults for properties, use `Object.assign()`
+
+```javascript
+// Bad!
+const menuConfig = {
+  title: null,
+  body: "Bar",
+  buttonText: null,
+  cancellable: true
+};
+
+function createMenu(config) {
+  config.title = config.title || "Foo";
+  config.body = config.body || "Bar";
+  config.buttonText = config.buttonText || "Baz";
+  config.cancellable =
+    config.cancellable !== undefined ? config.cancellable : true;
+}
+
+createMenu(menuConfig);
+```
+
+```javascript
+// Good!
+const menuConfig = {
+  title: "Order",
+  // User did not include 'body' key
+  buttonText: "Send",
+  cancellable: true
+};
+
+function createMenu(config) {
+  config = Object.assign(
+    {
+      title: "Foo",
+      body: "Bar",
+      buttonText: "Baz",
+      cancellable: true
+    },
+    config
+  );
+
+  // config now equals: {title: "Order", body: "Bar", buttonText: "Send", cancellable: true}
+  // ...
+}
+
+createMenu(menuConfig);
+```
