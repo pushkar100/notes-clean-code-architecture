@@ -230,6 +230,42 @@ function parseBetterJSAlternative(code) {
 }
 ```
 
+**Another example:**
+
+Each function should only have one level of abstraction. This means if a function does something that has a high level of abstraction then it should only do that.
+
+For example, if we want to write a function that loops through elements of an array and adds it to a list, then it should only do that.
+
+Below is an example of dividing code into functions by the level of abstraction:
+
+```javascript
+// Good!
+const addFruitLis = (fruits, ul) => {
+  for (const f of fruits) {
+    const li = document.createElement('li');
+    li.innerHTML = f;
+    ul.appendChild(li);
+  };
+}
+const addFruitUl = (fruits) => {
+  const ul = document.createElement('ul');
+  addFruitLis(fruits, ul);
+  document.body.appendChild(ul);  
+}
+const fruits = ['apple', 'orange', 'grape'];
+addFruitUl(fruits);
+```
+
+In the code above, we have a function `addFruitLis` that create the `li` elements and append it to the `ul` element that’s in the parameter.
+
+This is one level of abstraction because we’re adding the `li` elements after the `ul` element is generated. It’s one level below the `ul` in terms of hierarchy.
+
+Then we defined the `addFruitUl` function to create the `ul` element and delegate the addition of `li` elements to the `addFruitLis` function. Then the `ul` is appended to the document's body. This way, each function only does as little as possible.
+
+Each function only deals with one level of abstraction, as `addFruitLis` only deals with the li elements in the ul element and `addFruitUl` only deals with the ul element.
+
+The wrong way to write the code above would be to combine everything into one function. It makes the function’s code complex and confusing.
+
 ## 8. Favor functional programming over imperative programming
 
 **Advantages:**
@@ -394,3 +430,33 @@ function createMenu(config) {
 
 createMenu(menuConfig);
 ```
+
+## 11. Use blocks in ES6 instead of IIFEs to create namespaced code
+
+With ES6, we can create block scoped variables using `let` and `const`
+
+```javascript
+// Bad!
+(function() {
+  var numFruits = 1;
+})();
+
+// Good!
+{
+  let numFruits = 1;
+};
+```
+
+Even better is to use **modules** (separate files) and code there, exporting only what you need:
+
+```javascript
+// Good!
+// File: redColor.js
+// Some side effect
+export color = 'red'; // Main export
+
+// File: someOtherModule.js
+import { color } from './fruit'
+console.log(color);
+```
+
