@@ -16,6 +16,13 @@ function setName(name = 'Juan Palomo') {
 }
 ```
 
+```javascript
+// Good! An example of destructuring + default values
+function test({name} = {}) {
+  console.log (name || 'unknown');
+}
+```
+
 ## 2. Reduce function arguments (2 or fewer ideally)
 
 1. An adequate number could be 2 or less, but don't obsess over it

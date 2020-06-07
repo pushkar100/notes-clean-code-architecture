@@ -6,6 +6,8 @@ Learn some core concepts of clean code.
 
 [Link to Ryan's repo](https://github.com/ryanmcdermott/clean-code-javascript)
 
+[Jecelyn Yeen on Scotch.io](https://scotch.io/tutorials/5-tips-to-write-better-conditionals-in-javascript#toc-1-use-array-includes-for-multiple-criteria)
+
 ## What is a "Code Smell"?
 
 > A code smell is a surface indication that usually corresponds

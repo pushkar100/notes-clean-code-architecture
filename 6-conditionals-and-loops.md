@@ -90,6 +90,8 @@ function getPayAmount() {
 }
 ```
 
+**Note:** We can also throw errors early in guard clauses instead of returning early!
+
 ## 4.Avoid type checking
 
 JavaScript is untyped, which means your functions can take any type of argument. Sometimes you are bitten by this freedom and it becomes tempting to do type-checking in your functions. There are many ways to avoid having to do this. The first thing to consider is "consistent APIs".
@@ -291,6 +293,79 @@ for (let i = 0, len = list.length; i < len; i++) {
 // Good!
 for (let i = 0; i < list.length; i++) {
   // ...
+}
+```
+
+
+## 9. Favor Map / Object Literal than Switch Statement & If conditionals
+
+Multiple `if`s and `switch`es can be quite verbose!
+
+The same result can be achieve with object literal with cleaner syntax or a map
+
+```javascript
+// Bad!
+function test(color) {
+  // use switch case to find fruits in color
+  switch (color) {
+    case 'red':
+      return ['apple', 'strawberry'];
+    case 'yellow':
+      return ['banana', 'pineapple'];
+    case 'purple':
+      return ['grape', 'plum'];
+    default:
+      return [];
+  }
+}
+
+//test results
+test(null); // []
+test('yellow'); // ['banana', 'pineapple']
+```
+
+```javascript
+// Good!
+// use object literal to find fruits in color
+  const fruitColor = {
+    red: ['apple', 'strawberry'],
+    yellow: ['banana', 'pineapple'],
+    purple: ['grape', 'plum']
+  };
+
+function test(color) {
+  return fruitColor[color] || [];
+}
+```
+
+```javascript
+// Even better!
+// use Map to find fruits in color
+const fruitColor = new Map()
+  .set('red', ['apple', 'strawberry'])
+  .set('yellow', ['banana', 'pineapple'])
+  .set('purple', ['grape', 'plum']);
+
+function test(color) {
+  return fruitColor.get(color) || [];
+}
+```
+
+```javascript
+// Equally good! Using Array.proptotype.filter()
+const fruits = [
+    { name: 'apple', color: 'red' }, 
+    { name: 'strawberry', color: 'red' }, 
+    { name: 'banana', color: 'yellow' }, 
+    { name: 'pineapple', color: 'yellow' }, 
+    { name: 'grape', color: 'purple' }, 
+    { name: 'plum', color: 'purple' }
+];
+
+function test(color) {
+  // use Array filter to find fruits in color
+
+  return fruits.filter(f => f.color == color);
 }
 ```
 
