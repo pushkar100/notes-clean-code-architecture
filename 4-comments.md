@@ -84,6 +84,12 @@ function add(a, b) {
 ```
 
 ```javascript
+// Bad!
+/* Added by Bob */
+function foo() {}
+```
+
+```javascript
 // Good!
 function add(a, b) {
   return a + b;
@@ -143,3 +149,54 @@ doStuff();
 doStuff();
 ```
 
+## 5. Too much information
+
+Nobody wants to read an essay in the comments, so we shouldn’t write one. Better just to keep it short if we need them at all
+
+## 6. Avoid mumbling
+
+Adding comments just because we feel like it or the process requires it isn’t a good reason to put in comments. At least the comments have to be useful if we’re to write them
+
+```javascript
+// Bad!
+try {
+  loadProperties();
+} catch (e) {
+  // No properties means everything is loaded
+}
+```
+
+What is `properties`? When is everything loaded? Not very useful info!
+
+```javascript
+// Bad!
+try {
+  loadProperties();
+} catch (e) {}
+```
+
+## 7. Don’t Use Comments when Identifiers Can be Named Better
+
+We can easily write code that explains itself
+
+```javascript
+// Bad!
+// check if employee is eligible for child care benefits
+if (employee.salary < 50000 && employee.hasChild) {
+  //...
+}
+
+// Good!
+const isEligibleForChildCareBenefits = (employee) => {
+  return employee.salary < 50000 && employee.hasChild;
+}
+if (isEligibleForChildCareBenefits(employee)) {
+  //...
+}
+```
+
+## 8. Avoid misleading comments
+
+Misleading comments lead developers that are working on a piece of code to have the wrong understanding of the code and make bad decisions and create bugs.
+
+This obviously isn’t good. It leads to more time debugging to find out why something won't work as they described in the comments.
