@@ -127,3 +127,19 @@ const actions = function() {
   // ...
 };
 ```
+
+## 4. Don't leave commented out code in your codebase
+
+Version control exists for a reason. Leave old code in your history.
+
+```javascript
+// Bad!
+doStuff();
+// doOtherStuff();
+// doSomeMoreStuff();
+// doSoMuchStuff();
+
+// Good!
+doStuff();
+```
+
