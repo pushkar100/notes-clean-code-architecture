@@ -268,53 +268,7 @@ const total = items
   .reduce((total, price) => total + price);
 ```
 
-## 9. Use method chaining
-
-Functions that do a single task, with a single level of abstraction and without side effects need to be combined together to perform complex tasks (i.e combination of several of them). Therefore, it develops chained methods since they allow a more readable code
-
-The concept is similar to piping in linux where small utility functions are "chained" to build more complex functionality
-
-One can also compare the technique to jQuery method chaining.
-
-```javascript
-// Bad! No chaining
-class Car {
-  constructor(make, model, color) {
-    /* */
-  }
-  setColor(color) {
-    this.color = color;
-  }
-  save() {
-    console.log(this.make, this.model, this.color);
-  }
-}    
-const car = new Car('WV','Jetta','gray');
-car.setColor('red');
-car.save();
-
-// ---------------------
-
-// Good!
-class Car {
-  constructor(make, model, color) {
-    /* */
-  }
-  setColor(color) {
-      this.color = color;
-      return this;
-  }
-  save() {
-      console.log(this.make, this.model, this.color);
-      return this;
-  }
-}
-const car = new Car('WV','Jetta','gray')
-  .setColor('red')
-  .save();
-```
-
-## 10. Remove duplicate code
+## 9. Remove duplicate code
 
 Do your absolute best to avoid duplicate code. Duplicate code is bad because it means that there's more than one place to alter something if you need to change some logic.
 
@@ -383,7 +337,7 @@ function showEmployeeList(employees) {
 }
 ```
 
-## 11. Set default objects inside functions with `Object.assign`
+## 10. Set default objects inside functions with `Object.assign`
 
 Instead of using short-circuiting to enable defaults for properties, use `Object.assign()`
 
