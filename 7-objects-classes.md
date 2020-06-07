@@ -75,6 +75,21 @@ const account = makeBankAccount();
 account.balance = 100;
 ```
 
+Another example using classes. An advantage of getters and setters is **"computed properties"**. These are properties whose values are calculated on the fly
+
+```javascript
+// Good!
+class Rectangle {
+  constructor(length, width) {
+    this._length = length;
+    this._width = width;
+  }
+  get area() {
+    return this._length * this._width;
+  }
+}
+```
+
 ## 2. Make objects have private members
 
 We don't want to expose every property which can then be accidentally or maliciously changed.
@@ -113,7 +128,7 @@ delete employee.name;
 console.log(`Employee name: ${employee.getName()}`); // Employee name: John Doe
 ```
 
-## 3. Prefer classes over ES5 plain functions
+## 3. Use Classes Over Constructor Functions
 
 It's very difficult to get readable class inheritance, construction, and method definitions for classical ES5 classes. 
 
@@ -296,5 +311,27 @@ class Employee {
     this.taxData = new EmployeeTaxData(ssn, salary);
   }
   // ...
+}
+```
+
+**Another example:**
+
+A `Person` has a ‘has-a’ relationship with `Address`, so we shouldn’t use inheritance in this case.
+
+```javascript
+// Good!
+class Address {
+  constructor(streetName) {
+    this.streetName = streetName;
+  }
+}
+class Person {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+  setAddress() {
+    this.address = new Address('123 A St.');
+  }
 }
 ```
