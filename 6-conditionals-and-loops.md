@@ -298,7 +298,6 @@ for (let i = 0; i < list.length; i++) {
 }
 ```
 
-
 ## 9. Favor Map / Object Literal than Switch Statement & If conditionals
 
 Multiple `if`s and `switch`es can be quite verbose!
@@ -371,3 +370,14 @@ function test(color) {
 }
 ```
 
+## 10. Suggestion: Avoid negative conditionals
+
+Though not always possible to omit, these add additional complexity that the mind needs to understand and hence, avoid them wherever possible
+
+```javascript
+// Bad!
+if (!isEmployed) { }
+
+// Good!
+if (isEmployed) { } // Try to keep positive conditonals
+```
