@@ -1,5 +1,9 @@
 # SOLID Principles
 
+Like any other programming language, JavaScript is also subject to the principles outlined in SOLID.
+
+SOLID consists of 5 concepts that we can use to make our programs better:
+
 - **S**: Single Responsibility Principle (SRP)
 - **O**: Open/Closed Principle (OCP)
 - **L**: Liskov Substitution Principle (LSP)
@@ -58,6 +62,48 @@ class UserSettings {
   }
 }
 ```
+
+**Another example:**
+
+The single responsibility principle says that each of our classes has to be only used for one purpose.
+
+We need this so that:
+
+1. We don’t have to change code as often when something changes. 
+2. It’s also hard to understand what the class is doing if it’s doing many things.
+
+```javascript
+// Bad!
+class Rectangle {
+  constructor(length, width) {
+    this.length = length;
+    this.width = width;
+  }
+  get area() {
+    return this.length * this.width;
+  }
+  createCircle() {
+    // Why?
+  }
+}
+
+// We should NOT have a createCircle method in a Rectangle class since they’re unrelated concepts.
+```
+
+```javascript
+// Good!
+class Rectangle {
+  constructor(length, width) {
+    this.length = length;
+    this.width = width;
+  }
+  get area() {
+    return this.length * this.width;
+  }
+}
+```
+
+The Rectangle class above only has the length and width of a rectangle as members and lets us get the area from it. It does nothing else, so it follows the single responsibility principle.
 
 ## 2. Open/Closed Principle (OCP)
 
@@ -139,6 +185,44 @@ class HttpRequester {
     return this.adapter.request(url).then(response => {
       // transform response and return
     });
+  }
+}
+```
+
+**Another example:**
+
+**OCP** means that we should be able to add more functionality without changing existing code.
+
+Example:
+
+```javascript
+// Rectangle class
+class Rectangle {
+  constructor(length, width) {
+    this.length = length;
+    this.width = width;
+  }
+  get area() {
+    return this.length * this.width;
+  }
+}
+// How do we add extra functionality to this class?
+```
+
+```javascript
+// We add it by adding a method to the class (instead of changing the class at a more basic level)
+// We are not modifying the class - existing methods and properties remain as they are!
+class Rectangle {
+  constructor(length, width) {
+    this.length = length;
+    this.width = width;
+  }
+  get area() {
+    return this.length * this.width;
+  }
+  // Extended method: Open to extension, closed to modification
+  get perimteter() {
+    return 2 * (this.length + this.width);
   }
 }
 ```
@@ -249,6 +333,10 @@ const shapes = [new Rectangle(4, 5), new Rectangle(4, 5), new Square(5)];
 renderLargeShapes(shapes);
 ```
 
+**Another example**
+
+This means that the child class must implement everything that’s in the parent class. The parent class has the base members that child classes extend from.
+
 ## 4. Interface Segregation Principle (ISP)
 
 avaScript doesn't have interfaces so this principle doesn't apply as strictly as others. However, it's important and relevant even with JavaScript's lack of type system.
@@ -319,8 +407,8 @@ const $ = new DOMTraverser({
 
 This principle states two essential things:
 
-High-level modules should not depend on low-level modules. Both should depend on abstractions.
-Abstractions should not depend upon details. Details should depend on abstractions.
+- High-level modules should not depend on low-level modules. Both should depend on abstractions.
+- Abstractions should not depend upon details. Details should depend on abstractions.
 
 This can be hard to understand at first, but if you've worked with AngularJS, you've seen an implementation of this principle in the form of Dependency Injection (DI). While they are not identical concepts, DIP keeps high-level modules from knowing the details of its low-level modules and setting them up. It can accomplish this through DI. A huge benefit of this is that it reduces the coupling between modules. Coupling is a very bad development pattern because it makes your code hard to refactor.
 
@@ -401,3 +489,39 @@ const inventoryTracker = new InventoryTracker(
 );
 inventoryTracker.requestItems();
 ```
+
+**Another example**
+
+**DIP**
+
+We shouldn’t have to know any implementation details of our dependencies. If we do, then we violated this principle.
+
+We need this principle because if we do have to reference the code for the implementation details of a dependency to use it, then when the dependency changes, there’s going to be lots of breaking changes to our own code.
+
+As software gets more complex, if we don’t follow this principle, then our code will break a lot.
+
+One example of hiding implementation details from the code that we implement is the facade pattern. The pattern puts a facade class in front of the complex implementation underneath so we only have to depend on the facade to use the features underneath.
+
+```javascript
+// Good!
+class ClassA {
+}
+class ClassB {
+}
+class ClassC {
+}
+class Facade {
+  constructor() {
+    this.a = new ClassA();
+    this.b = new ClassB();
+    this.c = new ClassC();
+  }
+}
+class Foo {
+  constructor() {
+    this.facade = new Facade();
+  }
+}
+```
+
+We don’t have to worry about `ClassA`, `ClassB` and `ClassC` to implement the `Foo` class. As long as the Facade class doesn’t change, we don’t have to change our own code.
