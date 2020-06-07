@@ -10,6 +10,8 @@ The first advice to avoid complexity is to eliminate flags as parameters of a fu
 
 Instead, we must create two functions that implement the logic of our problem, instead of using a single function in which we have the logic of the two functionalities since they are different
 
+_Boolean parameters should be used sparingly. It makes the function signature more complex and it tells us that the function does more than one thing (has multiple paths)._
+
 ```javascript
 // Bad!
 function book(customer, isPremium) {

@@ -27,11 +27,15 @@ function test({name} = {}) {
 
 1. An adequate number could be 2 or less, but don't obsess over it
 2. If you need to increase the arguments, use an object as an "options" parameter to group together multiple arguments. 
-3. Using an object to grouped parameters has an added benefit in the sense that it creates a higher-level abstraction, closer to business logic
+3. Using an **object** to grouped parameters has an added benefit in the sense that it creates a higher-level abstraction, closer to business logic
 
 **Note:**
 
-Three arguments should be avoided if possible. Anything more than that should be consolidated!
+Three arguments should be avoided if possible (since they take a lot of time and brainpower to understand). Anything more than that should be consolidated!
+
+**Solution:**
+
+Create an object and pass it to the function. Use destructuring to pull out arguments in a similar fashion to multiple argumtns.
 
 ```javascript
 // Bad!
@@ -77,6 +81,14 @@ function addMonthToDate(month, date) {
 const date = new Date();
 addMonthToDate(1, date); // More readable
 ```
+
+**Use verbs and keywords:**
+
+A good example is `copyArray` which means that it is a function that copies an array.
+
+**Verb:** A word used to describe an action, state, or occurrence, and forming the main part of the predicate of a sentence, such as _hear_, _become_, _happen_. 
+
+Verbs are "doing" words. Verbs can express physical actions (e.g., play, dive), mental actions (e.g., think, guess), or states of being (e.g., exist, am).
 
 ## 4. Avoid side effects - Global Variables
 
