@@ -335,3 +335,21 @@ class Person {
   }
 }
 ```
+
+## 6. Have whitespaces before properties on new lines
+
+```javascript
+// Good!
+foo.map().filter()
+
+// Okay! (not so good)
+foo
+.map()
+.filter()
+
+// Good!
+foo
+  .map()
+  .filter()
+```
+
