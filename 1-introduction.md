@@ -73,6 +73,10 @@ var users = [
 
 Imagine reading code in a language that you will not be able to know the variables or function’s name, all the code will be encrypted for you.
 
+Plain English letters and digits aren’t encoded in any special way, so it won’t cause problems in different systems and we can easily search for the names. Also, most languages have English keywords so it’s more consistent with the rest of the code
+
+It justs taxes people’s brains more to figure out the encoding of characters of different languages. That’s the time that can be used to read and code
+
 3. Coding involves **Teamwork**
 
 Today nobody develops software alone. Everyone has a certain style preference. We can normalize the code by using linters and code formatters that perform these tasks while pushing or committing code.

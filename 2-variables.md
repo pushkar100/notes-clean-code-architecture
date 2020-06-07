@@ -22,6 +22,14 @@ const user
 
 ```javascript
 // Bad!
+let list = [];
+
+// Good!
+let fruits = [];
+```
+
+```javascript
+// Bad!
 locations.forEach(l => {
   doSomething();
   // ...
@@ -41,6 +49,8 @@ locations.forEach(location => {
 ## 2. Use pronounceable names
 
 In order to reveal the intention of the variable, one must be able to read it without much effort. Do not make me think about matters that are not the focus of my business logic
+
+Another way to think about them are by considering them to be **"Searchable Names"**. Developers often have to search through to add new code and debug and it’s important to have names that are searchable by typing in the search box or command line
 
 **Dont's:**
 
@@ -99,6 +109,16 @@ const [_, city, zipCode] = address.match(cityZipCodeRegex) || [];
 saveCityZipCode(city, zipCode);
 ```
 
+**Copying:**
+
+```javascript
+// Bad!
+let a2 = [...a1];
+
+// Good!
+let destinationArray = [...sourceArray]; 
+```
+
 ## 3. Don’t use the variable’s type in the name
 
 We should leave type information to the type system of the language or a type-checker such as Typescript or Flow.
@@ -120,6 +140,44 @@ const dAmount = 3.2;
 const countries = [] 
 const name = ‘’
 const amount = 3.2;
+```
+
+```javascript
+// Bad!
+let fruitArray = [];
+
+// Good!
+let fruits = []
+```
+
+**Other noise words in the name:**
+
+1. **Using `var` or `variable`**
+
+We shouldn’t add noise words like variable in a variable. It makes the name longer without revealing additional information.
+
+```javascript
+// Bad! Additional noise
+let countVar
+
+// Bad! Additional noise
+let countVariable
+
+// Good!
+let count
+```
+
+2. **Don't use member prefixes**
+
+- We don’t need prefixes are class and function member names since they’re already inside the class
+- Classes and functions should be small enough that there shouldn’t be too many members.
+
+```javascript
+// Bad!
+let m_description
+
+// Good!
+let description // <-- Good enough
 ```
 
 ## 4. Use the same vocabulary for the same variable’s type
