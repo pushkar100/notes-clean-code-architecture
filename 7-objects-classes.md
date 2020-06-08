@@ -589,3 +589,66 @@ class ShapeCalculator {
 ```
 
 We didn’t have to touch the internals to get the area of a `rectangle`. It’s much better to not reference the `length` and `width` from a `Rectangle` instance if we don’t have to.
+
+## 12. Pull up constructor body into superclass for overlapping code in subclass constructors
+
+If we have multiple constructor bodies in our subclasses with overlapping code, we can move them to the superclass.
+
+```javascript
+// Bad!
+class Employee {
+}
+class Cook extends Employee {
+  constructor(name, level) {
+    this.name = name;
+    this.level = level;
+  }
+}
+class Manager extends Employee {
+  constructor(name) {
+    this.name = name;
+  }
+}
+```
+
+```javascript
+// Good!
+class Employee {
+  constructor(name) {
+    this.name = name;
+  }
+}
+class Cook extends Employee {
+  constructor(name, level) {
+    super(name)
+    this.level = level;
+  }
+}
+class Manager extends Employee {
+}
+```
+
+## 13. Replace constructor with factory method when customizing creation
+
+If we want to do more things than a simple constructor can do, then we can replace it with a factory method.
+
+```javascript
+// Okay!
+class Employee {
+  constructor(type) {
+    this.type = type;
+  }
+  //...
+}
+```
+
+```javascript
+// Better!
+class Employee {
+  constructor(type) {
+    this.type = type;
+  }
+  //...
+}
+const createEmployee = type => new Employee(type);
+```
