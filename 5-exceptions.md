@@ -66,6 +66,78 @@ class Laptop {
 }
 ```
 
+**Another example**
+
+Throwing exceptions is better because they let us know that an error exists and that we have to handle it.
+
+Most modern programming languages have exceptions built-in, so we should throw them instead of returning an error code.
+
+Error codes aren’t as explicit and may be missed. Exceptions are also much cleaner since we don’t have to check all the codes that may be returned.
+
+For example, if we return error codes in our functions then we may have code that looks something like this:
+
+```javascript
+// Bad!
+const LESS_THAN_ZERO = 'LESS_THAN_ZERO';
+const TOO_MANY = 'TOO_MANY';
+const NOT_A_NUMBER = 'NOT_A_NUMBER';
+class FruitStand {
+  setNumFruit(numFruits) {
+    if (typeof numFruits !== 'number') {
+      return NOT_A_NUMBER;
+    }
+    if (numFruits < 0) {
+      return LESS_THAN_ZERO;
+    }
+    if (numFruits > 100) {
+      return TOO_MANY;
+    }
+    this.numFruits = numFruits;
+  }
+}
+const fruitStand = new FruitStand();
+const error = fruitStand.setNumFruit(1);
+if (error !== LESS_THAN_ZERO && error !== TOO_MANY && error !== NOT_A_NUMBER) {
+  console.log(fruitStand.numFruits);
+}
+```
+
+We have to return all the error codes in our `setNumFruit` method. Also, before we do something after the class definition, we have to check all the error codes.
+
+We can throw exceptions instead:
+
+```javascript
+// Good!
+const LESS_THAN_ZERO = 'LESS_THAN_ZERO';
+const TOO_MANY = 'TOO_MANY';
+const NOT_A_NUMBER = 'NOT_A_NUMBER';
+class FruitStand {
+  setNumFruit(numFruits) {
+    if (typeof numFruits !== 'number') {
+      throw new Error(NOT_A_NUMBER);
+    }
+    if (numFruits < 0) {
+      throw new Error(LESS_THAN_ZERO);
+    }
+    if (numFruits > 100) {
+      throw new Error(TOO_MANY);
+    }
+    this.numFruits = numFruits;
+  }
+}
+const fruitStand = new FruitStand();
+try {
+  const error = fruitStand.setNumFruit(1);
+  console.log(fruitStand.numFruits);
+} catch (ex) {
+  console.error(ex);
+}
+```
+
+We’ve eliminated the need to check all the error codes by wrapping the code we want to run in a `try` block. Now we can just catch the error instead of checking all the error codes that may be returned.
+
+This is much better than checking all error codes before doing something — it’s especially important as code becomes more complex!
+
 ## 2. Don't ignore caught error!
 
 The **ostrich technique** consists of hiding the head under the earth and that is what we do every time we have an error management where we do absolutely nothing
@@ -159,4 +231,48 @@ throw new UserException('UserException');
 
 // Good!
 throw new UserException('This user already exists');
+```
+
+## 6. Use `Try-Catch-Finally`
+
+We should wrap our `try` in the code that throws exceptions that we want to catch. It creates its own scope for block-scoped variables so anything declared with `let` or `const` can only be referenced in the `try` block.
+
+Variables declared with `var` are hoisted so that they can be referenced outside the block. We won’t get an error even if they’re referenced outside the block. 
+
+The `finally` statement lets you execute code, after try and catch, regardless of the result.
+
+**Note:** The catch and finally statements are both optional, but you need to use one of them (if not both) while using the try statement.
+
+This will get us`1`:
+
+```javascript
+try {
+  let x = 1;
+} catch (ex) {
+  console.error(ex);
+}
+console.log(x);
+```
+
+But this will get us `Uncaught ReferenceError: x is not defined`:
+
+```javascript
+try {
+  let x = 1;
+} catch (ex) {
+  console.error(ex);
+}
+console.log(x);
+```
+
+```javascript
+try {
+  // tryCode - Block of code to try
+}
+catch(err) {
+  // catchCode - Block of code to handle errors
+}
+finally {
+  // finallyCode - Block of code to be executed regardless of the try / catch result
+}
 ```

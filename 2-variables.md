@@ -68,6 +68,30 @@ let pluralModifier = numberOfItems ? '' : 's';
 let numItemsString = `${numberOfItems} item${pluralModifier}`;
 ```
 
+**Names Should Describe Side Effects**
+
+If the scope is long then the name should be longer than if they’re in a short scope. Variables with short names lose their meaning over long distances.
+
+```javascript
+let foo;
+
+// Bad!
+const getFoo = () => {
+  if (!foo) {
+    foo = {}
+  }
+  return foo
+}
+
+// Good!
+const setFooIfNotExistAndGetFoo = () => {
+  if (!foo) {
+    foo = {}
+  }
+  return foo
+}
+```
+
 ## 2. Use pronounceable names
 
 In order to reveal the intention of the variable, one must be able to read it without much effort. Do not make me think about matters that are not the focus of my business logic
