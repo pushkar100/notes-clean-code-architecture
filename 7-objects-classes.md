@@ -353,3 +353,127 @@ foo
   .filter()
 ```
 
+## 7. Classes Should be Small
+
+Classes should be small. They shouldn’t have more than one responsibility. What we don’t want is to have classes that do multiple things. A God class is what we don’t want.
+
+**Thumbrule:**
+
+If a method does something that’s not covered by the name of the class, then it shouldn’t be there. We should be able to describe what our class does without using the words 'if', 'and', 'or' or 'but'.
+
+```javascript
+// Bad!
+class Rectangle {
+  constructor(length, width) {
+    this.length = length;
+    this.width = width;
+  }
+  get area() {
+    return this.length * this.width;
+  }
+  // Why does Rectangle class have a createCircle method?
+  // The class is a rectangle but/and has a method on circles!
+  createCircle(radius) {
+  }
+}
+```
+
+```javascript
+// Good!
+class Rectangle {
+  constructor(length, width) {
+    this.length = length;
+    this.width = width;
+  }
+  get area() {
+    return this.length * this.width;
+  }
+}
+```
+
+**Single Responsibility Principle:**
+
+Identifying responsibilities let us create better abstractions in our code. 
+
+```javascript
+// Good!
+// Create circle can be inside its own class
+class Circle {
+  constructor(radius) {
+    this.radius = radius;
+  }
+  get area() {
+    return Math.PI * (this.radius ** 2);
+  }
+}
+```
+
+## 8. Classes should be maximally cohesive
+
+Classes should have:
+1. **A small number of instance variables**
+2. **Each method should manipulate one or more instance variables** 
+
+"A class where each variable is used by each method is maximally cohesive."
+
+**Reasons:**
+
+- We like cohesion to be high so that the methods and instance variables are co-dependent and stay together as a whole.
+- High cohesion makes reading the code easy since it only revolves around a single concept. 
+- They’re also less frequently changed since each class doesn’t do much.
+
+```javascript
+// Good!
+class Circle {
+  constructor(radius) {
+    this.radius = radius;
+  }
+  get area() {
+    return Math.PI * (this.radius ** 2);
+  }
+}
+```
+
+`Circle` is cohesive because we used our radius instance variable in the area getter method, so we used every instance variable in our method.
+
+**Maintain Cohesion Means Many Small Classes**
+
+Bigger classes have problems maintaining cohesion because we keep adding new instance variables that only a few methods use. **We must split up a class in that case**
+
+```javascript
+// Bad!
+class Shape {
+  constructor(radius, length, width) {
+    this.radius = radius;
+    this.length = length;
+    this.width = width;
+  }
+  get circleArea() {
+    return Math.PI * (this.radius ** 2);
+  }
+  get rectangleArea() {
+    return this.length * this.width;
+  }
+}
+```
+
+```javascript
+// Good!
+class Rectangle {
+  constructor(length, width) {
+    this.length = length;
+    this.width = width;
+  }
+  get area() {
+    return this.length * this.width;
+  }
+}
+class Circle {
+  constructor(radius) {
+    this.radius = radius;
+  }
+  get area() {
+    return Math.PI * (this.radius ** 2);
+  }
+}
+```
