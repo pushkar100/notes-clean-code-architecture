@@ -543,3 +543,49 @@ Object.freeze(store);
 ```
 
 `Store.instance` is static so it’s shared by all instances of the class.
+
+## 11. Reference as little code from external classes as possible
+
+```javascript
+// Bad!
+class Rectangle {
+  constructor(length, width) {
+    this.length = length;
+    this.width = width;
+  }
+}
+class ShapeCalculator {
+  calcRectangleArea(length, width) {
+    const rectangle = new Rectangle(length, width);
+    return rectangle.length * rectangle.width;
+  }
+}
+```
+
+We have the `ShapeCalculator` class that references the `Rectangle` class a lot. We call its constructor and instance variables.
+
+However, we shouldn’t do this because it’s referencing too much from the `Rectangle` class. We can remove references to the instance variables as follows:
+
+- Extend the referenced class
+- Use the extended methods in the referencing class. By doing so, it reduces the number of instance variables used from the referenced class
+
+```javascript
+// Good!
+class Rectangle {
+  constructor(length, width) {
+    this.length = length;
+    this.width = width;
+  }
+  getArea() {
+    return this.length * this.width;
+  }
+}
+class ShapeCalculator {
+  calcRectangleArea(length, width) {
+    const rectangle = new Rectangle(length, width);
+    return rectangle.getArea();
+  }
+}
+```
+
+We didn’t have to touch the internals to get the area of a `rectangle`. It’s much better to not reference the `length` and `width` from a `Rectangle` instance if we don’t have to.
