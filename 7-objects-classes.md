@@ -477,3 +477,69 @@ class Circle {
   }
 }
 ```
+
+## 9. Use ES6 property shorthands
+
+It is much shorter than the original version and is less to read (while still being easy to read it)
+
+```javascript
+const a = 1;
+const b = 'foo';
+const c = 3;
+
+// Bad!
+const obj = {
+  a: a,
+  b: b,
+  c: c
+}
+
+// Good!
+const obj = {
+  a,
+  b,
+  c
+}
+```
+
+## 10. Use singleton pattern to manage anything global
+
+Global content can be something like **app-wide state**
+
+A singleton is an object that can be **the only instance** of a class. Use `Object.freeze()`
+
+```javascript
+// Good!
+const data = [];
+const Store = {
+  add: item => data.push(item),
+  getById: id => data.find(d => d.id === id)
+}
+Object.freeze(Store); // Store and its methods can never change!
+// Store also cannot be reassigned (due to `const`)
+```
+
+**Converting classes to return the same single instance always**
+
+```javascript
+// Good!
+class Store {
+  constructor() {
+    if (!Store.instance) {
+      this.data = [];
+      Store.instance = this;
+    }
+    return Store.instance; // The instance is a property on the class, hence static!
+  }
+  add(item) {
+    this.data.push(item);
+  }
+  getById(id) {
+    return this.data.find(d => d.id === id);
+  }
+}
+const store = new Store()
+Object.freeze(store);
+```
+
+`Store.instance` is static so it’s shared by all instances of the class.
