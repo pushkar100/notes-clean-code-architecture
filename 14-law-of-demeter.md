@@ -154,3 +154,19 @@ If the code underneath the facade class is poorly designed, we can also wrap aro
 
 Most importantly, tight coupling is eliminated since nothing but the `Facade` class references the complex code underneath it.
 
+## Avoid Transitive Navigation
+
+We should avoid code structure where we have `A` referencing `B` and `B` referencing `C`
+
+It’s harder on our brains to understand this kind of navigation. Also, it **exposes us to more code that is coupled together**. We shouldn’t expose code that we don’t want to expose!
+
+```javascript
+// Bad!
+foo.getBar().getBaz().doSomething();
+```
+
+The code above is bad because we have to get the `Bar` instance with `getBar`, and then with the `Bar` instance, we have to get the Baz instance with `getBaz`. Then we finally call `doSomething` on the `Baz` instance
+
+That’s **fragile** code, because if anything in the chain breaks, then the whole thing breaks.
+
+Any of them changing will become an issue. We should take out this transitive navigation code by changing the implementation so that we don’t have this kind of structure.

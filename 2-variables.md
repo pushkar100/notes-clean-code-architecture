@@ -4,6 +4,8 @@
 
 Variable names must reveal the intention of that variable. For example, do not use mathematical variables such as `x` and `y`.
 
+We should name things by what they mean!
+
 **Drawbacks of bad names:**
 
 1. Does not reveal the intention
@@ -44,6 +46,26 @@ locations.forEach(location => {
   // ...
   createMap(location);
 })
+```
+
+**No generic names! Only meaningful context**
+
+```javascript
+// Bad!
+let num = 5; // Number of what??
+let modifier;
+let number;
+
+// Good!
+let numFruits = 5; // instead of num
+let passwordModifier; // instead of modifier
+let userID; // instead of number
+
+// Good!
+// More on meaningful context inside names:
+let numberOfItems = 1;
+let pluralModifier = numberOfItems ? '' : 's';
+let numItemsString = `${numberOfItems} item${pluralModifier}`;
 ```
 
 ## 2. Use pronounceable names
@@ -253,6 +275,28 @@ const ADMINISTRATOR_ROL = “Administrator”;
 
 setTimeout(blastOff, MILLISECONDS_IN_A_DAY);
 user.rol = ADMINISTRATOR_ROL;
+```
+
+## 7. Use unambiguous names
+
+They shouldn’t have double meaning where people have to guess what the name actually means. Guessing is bad since people may lead to the wrong conclusion and make mistakes when changing the code
+
+**Bottom line:**
+
+_Don't make people guess!_ They can guess wrong and things can go awry!
+
+```javascript
+// Bad!
+let rename = () => {
+  // ?? Rename what? A string, a file, or a class?
+  // ...
+};
+
+// Good!
+let renameFile = () => {
+  // more appropriate since we know for sure that the function is for renaming a file.
+  // ...
+};
 ```
 
 ## Conclusion
