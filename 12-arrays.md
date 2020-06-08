@@ -66,3 +66,9 @@ function test() {
 // For any fruit to be red: use `fruits.some()`
 ```
 
+## 3. Use sets to remove duplicates from an array
+
+```javascript
+let cities = ['London', 'Delhi', 'Tel Aviv', 'Delhi', 'Sydney', 'Sydney']
+cities = [ ...new Set(cities)]
+```
