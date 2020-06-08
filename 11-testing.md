@@ -53,3 +53,43 @@ describe("MomentJS", () => {
   });
 });
 ```
+
+## 2. Have sufficient tests by using a coverage tool
+
+Test coverage tools tell us what we have tests for and what still needs test coverage. They also tell us which branches of our code have test coverage.
+
+- Boundary and edge cases should also have tests to test cases that may break our code.
+- Tests should take into account both positive and negative cases
+
+## 3. Don’t Skip Trivial Tests
+
+They’re easy to write and serves as good documentation.
+
+## 4. Tests Should be Fast
+
+Slow tests are torture to run. They just get ignored and won’t get run. We should make them as fast as possible, especially since there’s going to be lots of them.
+
+## 5. Exhaustively Test Near Bugs
+
+If a piece of code has bugs, then we should test those cases more.
+
+## 6. Test Boundary Conditions
+
+Testing boundary conditions is important since code often breaks around boundary conditions.
+
+## 7. Use Test Driven Development (TDD)
+
+There’re 3 principles of TDD:
+
+- We may not write production code until we’ve written some failing unit tests.
+- We only write a test that fails and not makes compilation fail.
+- We write production code to make the failing test pass.
+
+This means that the **test and code are written together**. The result is that we write dozens of tests every day and test coverage would be comprehensive
+
+## 8. Write clean tests
+
+Test code should be kept to the same quality as normal production code. This way, it’ll be easy to maintain the test
+
+Things like naming things properly, creating functions that aren’t too long, formatting, etc., all apply to unit tests just as much as production code. This makes tests easy to maintain so people can move on to writing production code
+
