@@ -93,3 +93,16 @@ Test code should be kept to the same quality as normal production code. This way
 
 Things like naming things properly, creating functions that aren’t too long, formatting, etc., all apply to unit tests just as much as production code. This makes tests easy to maintain so people can move on to writing production code
 
+## 9. Write code that’s easily testable
+
+This means that the code should be **loosely** coupled so it can be easily tested by unit tests. Loose coupling also means that code can be more easily modified since it doesn’t affect other parts of the code
+
+We can use dependency inversion tools like **dependency injection** and **abstractions** to minimize coupling in JavaScript code.
+
+Writing tests enforce **low coupling** and **high cohesion** since writing easily testable code requires code with these two characteristics.
+
+## 10. Refactor code once tests are setup
+
+Once we have tests, we can refactor without thinking too much about breaking things since we have tests to make sure that we don’t break anything.
+
+We can apply the principles of good software design like SOLID and other clean code principles when we refactor the code.

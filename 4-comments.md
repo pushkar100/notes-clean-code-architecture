@@ -200,3 +200,24 @@ if (isEligibleForChildCareBenefits(employee)) {
 Misleading comments lead developers that are working on a piece of code to have the wrong understanding of the code and make bad decisions and create bugs.
 
 This obviously isn’t good. It leads to more time debugging to find out why something won't work as they described in the comments.
+
+## 9. Document the source of algorithms that are used
+
+If we used an algorithm from some other source, then we may want to attribute it to that source so that people can look them up in that source.
+
+## 10. Justify Violations of Good Programming Style
+
+If we have to violate a good programming style, then we’ve to justify it. It’ll make everyone know that isn’t being sloppy.
+
+## 11. Don’t Comment Tricky Code, Rewrite it Instead
+
+We shouldn’t write comments to explain tricky code. If we can make them clearer by rewriting them, then we should do that.
+
+This way, anyone else that’ll work on the code will thank us for making their lives easier.
+
+## 12. Comment the Units of Numeric Data
+
+If the units of numeric data aren’t completely clear, then we should make them clear by commenting on them.
+
+We can **also put the unit in the variable name rather than adding a comment**, which is probably **better** since we won’t have to add the comment.
+

@@ -393,7 +393,7 @@ class Rectangle {
 
 **Single Responsibility Principle:**
 
-Identifying responsibilities let us create better abstractions in our code. 
+Identifying responsibilities let us create better abstractions in our code. Anything that violates the single responsibility principle has to be extracted into its own class.
 
 ```javascript
 // Good!
