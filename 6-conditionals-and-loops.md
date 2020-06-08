@@ -94,6 +94,20 @@ function getPayAmount() {
 
 **Note:** We can also throw errors early in guard clauses instead of returning early!
 
+**More on guard clauses**
+
+> A guard is a boolean expression that must evaluate to true if the program execution is to continue in the branch in question. Regardless of which programming language is used, guard code or a guard clause is a check of integrity preconditions used to avoid errors during execution
+
+It:
+
+- Removes extra mental effort of conditionals
+- Removes possible nesting of conditinals
+- Reduces `else` cases (thereby reducing the mental effort needed)
+
+**Too many `else if`s in code? Use guard clauses**
+
+If your code requires cases like else if, it’s because you are breaking the Principle of Single Responsibility and the code makes higher-level decisions, which should be refactored using techniques such as division into submethods or design patterns such as command or strategy.
+
 ## 4.Avoid type checking
 
 JavaScript is untyped, which means your functions can take any type of argument. Sometimes you are bitten by this freedom and it becomes tempting to do type-checking in your functions. There are many ways to avoid having to do this. The first thing to consider is "consistent APIs".
