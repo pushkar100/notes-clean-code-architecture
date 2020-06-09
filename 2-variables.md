@@ -92,6 +92,18 @@ const setFooIfNotExistAndGetFoo = () => {
 }
 ```
 
+**Names having 'data' keyword might add redundancy**
+
+This is subjective. Sometimes, having `data` might make sense. At other times, it is just extra letters without adding more meaning
+
+```javascript
+// Bad!
+getUserData()
+
+// Good!
+getUser() // We implicitly know that getting user means getting the user's data
+```
+
 ## 2. Use pronounceable names
 
 In order to reveal the intention of the variable, one must be able to read it without much effort. Do not make me think about matters that are not the focus of my business logic
