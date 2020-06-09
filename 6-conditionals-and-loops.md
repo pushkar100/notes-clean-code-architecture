@@ -395,3 +395,22 @@ if (!isEmployed) { }
 // Good!
 if (isEmployed) { } // Try to keep positive conditonals
 ```
+
+## 11. Short-circuiting is better than a single `if-else` during assignment or return
+
+```javascript
+// Bad!
+function createBookStore(name) {
+  var bookStoreName;
+  if (name) {
+    bookStoreName = name;
+  } else {
+    bookStoreName = "Generic Book Store"
+  }
+}
+
+// Good!
+function createBookStore(name) {
+  const bookStoreName = name || "Generic Book Store";
+}
+```

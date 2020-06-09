@@ -104,6 +104,26 @@ getUserData()
 getUser() // We implicitly know that getting user means getting the user's data
 ```
 
+**Avoid too many index lookups: Assign them to names instead**
+
+`foo.bar[i]`, `dataFromApi[4]`, etc are harder to read when compared to single variables. Combine them with conditionals or loops and they become more convoluted a structure to decipher mentally
+
+They also do not reveal their intention (Ex: What type of data is the 4th index supposed to be?)
+
+
+```javascript
+// Bad!
+const cityStateRegex = /\.\.\./;
+saveCityStateRegex(cityState.match(cityStateRegex)[0], cityState.match(cityStateRegex)[1]);
+
+// Good!
+const cityStateRegex = /\.\.\./;
+const match = cityState.match(cityStateRegex);
+const city = match[0];
+const state = match[1];
+saveCityStateRegex(city, state);
+```
+
 ## 2. Use pronounceable names
 
 In order to reveal the intention of the variable, one must be able to read it without much effort. Do not make me think about matters that are not the focus of my business logic
