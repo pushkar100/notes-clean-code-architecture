@@ -652,3 +652,34 @@ class Employee {
 }
 const createEmployee = type => new Employee(type);
 ```
+
+## 14. Use classes and extend it over writing to global functions
+
+We don't want to pollute the global data. It can lead to conflicts, unreliable behavior, and other issues
+
+Imagine we want to add a special method to a certain type of array we have created:
+
+```javascript
+// Bad!
+Array.prototype.alternateCase = function() {
+  return this.map((element, index) => 
+    index % 2 
+      ? element 
+      : element.toUpperCase()
+  )
+};
+['a', 'b', 'c' , 'd'].alternateCase() // ["A", "b", "C", "d"]
+
+// Good!
+class SuperArray extends Array {
+  alternateCase() {
+    return this.map((element, index) => 
+      index % 2 
+        ? element 
+        : element.toUpperCase()
+    )
+  }
+}
+const superList = new SuperArray('a', 'b', 'c' , 'd');
+superList.alternateCase() // ["A", "b", "C", "d"]
+```
