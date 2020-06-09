@@ -28,6 +28,10 @@ Comments have to exist only to help programmers in explaining business logic tha
 
 Good code is most of the time self-documented and therefore, the source code is understood with the fact of being read. _Comments are an extra, not a requirement_
 
+**Thumb rule**
+
+If you can get the meaning of the comment from just the code it references, you don't need that comment!
+
 ```javascript
 // Bad!
 function convert(data){
