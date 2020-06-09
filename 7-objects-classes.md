@@ -4,8 +4,8 @@
 
 With getters and setters, we can:
 
-1. Encapsulate the internal representation
-2. Don't have to change every accessor in codebase
+1. Encapsulate the internal representation - Enables us to use private variables instead of `this.prop`
+2. Don't have to change every accessor in codebase - easier to make changes
 3. Add logging and error handling when getting and setting
 4. Lazy load an object's properties, let's say getting it from a server!
 5. Adding validation when doing a `set`
@@ -124,7 +124,7 @@ function makeEmployee(name) {
 
 const employee = makeEmployee("John Doe");
 console.log(`Employee name: ${employee.getName()}`); // Employee name: John Doe
-delete employee.name;
+delete employee.name; // Does not work
 console.log(`Employee name: ${employee.getName()}`); // Employee name: John Doe
 ```
 

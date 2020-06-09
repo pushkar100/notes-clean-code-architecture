@@ -12,6 +12,10 @@ Learn some core concepts of clean code.
 
 [FreeCodeCamp on Youtube - Clean Code (Beau Teaches Javascript)](https://www.youtube.com/playlist?list=PLWKjhJtqVAbkK24EaPurzMq0-kw5U9pJh)
 
+## What is Clean Code?
+
+Code that is **Readable**, **Reusable**, and **Refactorable**
+
 ## What is a "Code Smell"?
 
 > A code smell is a surface indication that usually corresponds
