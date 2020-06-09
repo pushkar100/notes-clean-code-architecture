@@ -391,9 +391,11 @@ Though not always possible to omit, these add additional complexity that the min
 ```javascript
 // Bad!
 if (!isEmployed) { }
+if (!isDomNodeNotPresent(node)) {}
 
 // Good!
 if (isEmployed) { } // Try to keep positive conditonals
+if (isDomNodePresent(node)) {}
 ```
 
 ## 11. Short-circuiting is better than a single `if-else` during assignment or return
