@@ -199,48 +199,47 @@ Make use of a solution based on _inheritance_ that makes use of **polymorphism**
 ```javascript
 // Bad!
 // Misuse of these conditionals to define the logic of a method based on the type of the object.
-function Auto() {
-}
-Auto.prototype.getProperty = function () {
-  switch (type) {
-    case BIKE:
-      return getBaseProperty();
-    case CAR:
-      return getBaseProperty() - getLoadFactor();
-    case BUS:
-      return (isNailed) ? 
-        0 : 
-        getBaseProperty(voltage);
+class Airplane {
+  // ...
+  getCruisingAltitude() {
+    switch (this.type) {
+      case "777":
+        return this.getMaxAltitude() - this.getPassengerCount();
+      case "Air Force One":
+        return this.getMaxAltitude();
+      case "Cessna":
+        return this.getMaxAltitude() - this.getFuelExpenditure();
+    }
   }
-  throw new Exception("Should be unreachable");
-};
+}
 ```
 
 ```javascript
 // Good!
-abstract class Auto { 
-  abstract getProperty();
+class Airplane {
+  // ...
 }
 
-class Bike extends Auto {
-  getProperty() {
-    return getBaseProperty();
+class Boeing777 extends Airplane {
+  // ...
+  getCruisingAltitude() {
+    return this.getMaxAltitude() - this.getPassengerCount();
   }
 }
-class Car extends Auto {
-  getProperty() {
-    return getBaseProperty() - getLoadFactor();
+
+class AirForceOne extends Airplane {
+  // ...
+  getCruisingAltitude() {
+    return this.getMaxAltitude();
   }
 }
-class Bus extends Auto {
-  getProperty() {
-    return (isNailed) ? 
-      0 : 
-      getBaseProperty(voltage);
+
+class Cessna extends Airplane {
+  // ...
+  getCruisingAltitude() {
+    return this.getMaxAltitude() - this.getFuelExpenditure();
   }
 }
-// Somewhere in client code
-speed = auto.getProperty();
 ```
 
 ## 7. Remove conditionals using Strategy pattern (composition)/Command pattern
