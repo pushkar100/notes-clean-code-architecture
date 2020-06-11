@@ -1,17 +1,17 @@
 # Tenets of clean code
 
 1. Reliability 
-  1. Correctness
-  2. Stability
-  3. Resilience
+    1. Correctness
+    2. Stability
+    3. Resilience
 2. Efficiency 
-  1. Time
-  2. Space
+    1. Time
+    2. Space
 3. Maintainability 
-  1. Adaptability
-  2. Familiarity
+    1. Adaptability
+    2. Familiarity
 4. Usability
-  - User stories, intuitive design, accessibility, ...
+    - User stories, intuitive design, accessibility, ...
 
 A good software is said to have all these qualities. Bad software has none of these.
 
@@ -204,6 +204,6 @@ function checkIsNewYear(
 **How can we improve usability?**
 
 1. **User stories**: `As a {persona}, I want to {want}, so that {purpose}...`
-  - Ex: `As a user, I want to add a new contact so that I can later recall that contact from my contacts list.` 
+    - Ex: `As a user, I want to add a new contact so that I can later recall that contact from my contacts list.` 
 2. **Intuitive design**: All users are attuned to a set of patterns that are employed on their level of abstraction.
 3. **Accessibility**: Not just physically challenged persons but even ones with less access to technology due to mobility, economy, or infrastructure. We must focus on the user when things seem complex
