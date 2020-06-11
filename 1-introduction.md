@@ -12,9 +12,74 @@ Learn some core concepts of clean code.
 
 [FreeCodeCamp on Youtube - Clean Code (Beau Teaches Javascript)](https://www.youtube.com/playlist?list=PLWKjhJtqVAbkK24EaPurzMq0-kw5U9pJh)
 
+[Clean Code in Javascript](https://github.com/PacktPublishing/Clean-Code-in-JavaScript)
+
 ## What is Clean Code?
 
 Code that is **Readable**, **Reusable**, and **Refactorable**
+
+When we write code, we are defining an implicit specification. This specification is communicated by its name, its configuration, its options, its input, and its output. Anyone who uses our code has the right to expect it to work according to its specifications, so the more explicit.
+
+## Writing code for humans
+
+The code we write is primarily for people. You may be building a brochure website, programming a web application, or crafting a complex utility function for a framework.
+
+Your end user with a GUI you built, or other programmers using your code, and even your future self - all of them are people.
+
+When we say that we are writing code for humans, what do we mean? We mean:
+
+1. **There is clarity of intent**. We don't just focus on _functionality_ like when we write for machines.
+
+```javascript
+// Bad!
+function chb(d,m,y) {
+  return new Date(y,m-1,d)-new Date / 6e4 * 70;
+}
+
+// Good!
+const AVG_HEART_RATE_PER_MILLISECOND = 70 / 60000;
+
+function calculateHeartBeatsSinceBirth(birthDay, birthMonth, birthYear) {
+  const birthMonthIndex = birthMonth - 1;
+  const birthDate = new Date(birthYear, birthMonthIndex, birthDay);
+  const currentDate = new Date();
+
+  return (currentDate - birthDate) / AVG_HEART_RATE_PER_MILLISECOND;
+}
+```
+
+2. **Readability of code**
+
+The more cognitive effort required to read the code, the less it is appreciated. The purpose, when you are presenting your code to another programmer, is **"comprehension"**
+
+Therefore, maintain good _patterns_ and _formatting_ - people are good at spotting inconsistencies!
+
+**Keywords**: Comprehension, presentation, patterns, formatting, consistency
+
+3. **Meaningful abstraction**
+
+What is abstraction? Abstraction is what occurs when we take a piece of complexity and then present access to that complexity in a simpler way.
+
+Why is it important? It enables people to have leverage (advantage or influence or power used to achieve a desired result) over that abstracted complexity without having to understand it. Ex: Calling `startAnimation()` abstracts away all the internals of the animation and enables the user of this code to achieve what he wants with the code - i.e start the animation - without knowing the implementation details
+
+Examples of in-built abstractions:
+- Javascript abstracts away memory allocation complexity from us
+- Browser abstracts away HTTP communication, local storage, and HTML DOM & CSSOM creation & Rendering details
+- NodeJS abstracts away file system, path, etc. modules
+
+In the same way, every line of code you write introduces some level of abstraction
+
+**Tower of abstraction:**
+
+Every type of software written has added on layer on the "tower of abstraction" (an analogy). The higher a layer, the more it depends on all the lower code - so the lower code needs to be very reliable! We have to think about this when writing our code
+
+Ex: 
+- Our application
+- Framework
+- Browser
+- Operating system
+- Machine language 
+- hardware
 
 ## What is a "Code Smell"?
 
