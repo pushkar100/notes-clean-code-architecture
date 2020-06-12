@@ -161,6 +161,8 @@ class CalendarExporter {
 
 **The tenets of clean code emphasized by SRP**
 
+_RELIABILITY_ and _EFFICIENCY_
+
 The SRP is not only about creating abstractions that are simple to use and maintain (like the Law of Demeter), it also allows us to write code that is more **focused** (by way of cohesiveness of an abstraction's methods and properties) on its key purpose.
 
 ## 2. Open/Closed Principle (OCP)
@@ -234,6 +236,7 @@ class NodeAdapter extends Adapter {
   }
 }
 
+// A "configuration" based extension example!
 class HttpRequester {
   constructor(adapter) {
     this.adapter = adapter;
@@ -284,6 +287,70 @@ class Rectangle {
   }
 }
 ```
+
+**Alternate explanation**
+
+The OCP is for other programmers. Think of people who will be working with your code. adapting it and so on. We should not force them to make _modifications_, instead we must allow them to _extend_ what's already written.
+
+**Ways to extend an abstraction**
+
+- Inheritance
+- Composition
+- Configuration
+
+```javascript
+// Good! (An example of extension with inheritance)
+class Event {
+ renderNotification() {
+    return `
+      You have an event occurring in
+      ${this.calcMinutesUntil()} minutes!
+    `;
+  }
+ // ...
+}
+
+class ImportantEvent extends Event {
+  renderNotification() {
+    return `Urgent! ${super.renderNotification()}`;
+  }
+}
+```
+
+We are prefixing our urgent message by overriding the `renderNotification` method and calling the super class's `renderNotification` to fill in the remainder of the notification string. Therefore, extension by inheritance
+
+```javascript
+// Good! (An example of extension with configuration)
+class Event {
+ renderNotification() {
+    const defaultNotification = `
+      You have an event occurring in
+      ${this.calcMinutesUntil()} minutes!
+    `;
+    return (
+      this.config.renderCustomNotification
+        ? this.config.renderCustomNotification(defaultNotification)
+        : defaultNotification
+    );
+  }
+ // ...
+}
+
+new Event({
+  title: 'Doctor Appointment',
+  config: {
+    renderCustomNotification: defaultNotification => {
+      return `Urgent! ${defaultNotifcation}`;
+    }
+  }
+});
+```
+
+We are providing our custom `renderNotification` method in a configuration object to `Event`. If it is passed, it is invoked by passing the default notification to it. Else, the default notification is rendered.
+
+**NOTE**
+
+It is impossible to foresee all types of extensions.
 
 ## 3. Liskov Substitution Principle (LSP)
 
