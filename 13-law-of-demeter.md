@@ -2,6 +2,30 @@
 
 The Law of Demeter states that we should hide the implementation details of our code as much as we can. 
 
+Also known as **the principle of least knowledge**.
+
+**The tenet of clean code it advocates**
+
+_MAINTAINABILITY_
+
+**The 3 rules:**
+
+1. A unit should have only limited knowledge about other units 
+2. A unit should only talk to its immediate friends 
+3. A unit should not talk to strangers
+
+**What are units and what does talking mean?**
+
+A **unit**, in this context, is a specific coded abstraction: possibly a _function_, a _module_, or a _class_.
+
+**Talking** means interfacing with, such as calling the code of another module or having that other module call your code.
+
+_"Only talk to friends"_ means you should only interface with abstractions that you should have knowledge of.
+
+**Who are friends and who are strangers?**
+
+The LoD provides us guidance but it is up to us to defined who are an abstraction's friends and strangers. It depends on the context and level of abstraction
+
 **Why?**
 
 This ensures that we have loose coupling between our code.
@@ -113,6 +137,124 @@ The point is that we should have to know the whole system to get something done.
 `PostalCode` doesn’t have to be connected to `Address` since they can be changed individually. If we couple them together, then we have to know about `Address` before changing `PostalCode`.
 
 The example above shows coupling that can be avoided and it should be.
+
+**Another, better example of Law of Demeter**
+
+```javascript
+// Bad!
+class Customer {
+  constructor() {
+    this.wallet = new CustomerWallet();
+  }
+}
+
+class CustomerWallet {
+  constructor() {
+    this.amount = 0;
+  }
+  addMoney(deposit) {
+    this.amount += deposit;
+  }
+  takeMoney(debit) {
+    this.amount -= debit;
+  }
+}
+
+class Shopkeeper {
+  processPurchase(product, customer) {
+    const price = product.price();
+    customer.wallet.takeMoney(price);
+    // ...
+  }
+}
+```
+
+In this example, the shopkeeper reaches out to the customer's wallet and takes out cash. If this real life interaction is absurd, even the code interaction is also equally absurd!
+
+- How the customer wishes to pay is his option (card, cash, etc)
+- The shopkeeper must only interact with the customer and not outside his/her boundaries
+  - That means shopkeeper's immediate friend is the customer and not the wallet
+
+
+```javascript
+// Good!
+class Customer {
+  constructor() {
+    this.wallet = new CustomerWallet();
+  }
+  requestPayment(price) {
+    this.wallet.takeMoney(price)
+  }
+}
+
+class CustomerWallet {
+  constructor() {
+    this.amount = 0;
+  }
+  addMoney(deposit) {
+    this.amount += deposit;
+  }
+  takeMoney(debit) {
+    this.amount -= debit;
+  }
+}
+
+class Shopkeeper {
+  processPurchase(product, customer) {
+    const price = product.price();
+    customer.requestPayment(price);
+    // ...
+  }
+}
+```
+
+**Example with DOM**
+
+Generalizing a common piece of functionality.
+
+Strangers can be things like a **high level module** interacting with a **low level implementation detail**
+
+```javascript
+// Bad!
+function displayHappyBirthday(name) {
+  const container = document.createElement('div');
+  container.className = 'message birthday-message';
+  container.appendChild(
+    document.createTextNode(`Happy Birthday ${name}!`)
+  );
+  document.body.appendChild(container);
+} 
+```
+
+Why is `displayHappyBirthday` concerned with how to display a message on the DOM? If we created a new function such as `displayHappyNewYear` then do we have to access the DOM in that function too? 
+
+How about having a **bridge** class or function that displays a message on the DOM and we make us of this class for all types of messages? Now, only the bridge class takes care of implementation details
+
+```javascript
+// Good!
+function displayMessage(message, className) {
+  const container = document.createElement('div');
+  container.className = `message ${className}`;
+  container.appendChild(
+    document.createTextNode(message)
+  );
+  document.body.appendChild(container);
+}
+
+function displayHappyBirthday(name) {
+  return displayMessage(
+    `Happy Birthday ${name}!`,
+    'birthday-message'
+  );
+}
+
+function displayHappyNewYear(name) {
+  return displayMessage(
+    `Happy New Year! ${name}`,
+    'happy-new-year-message'
+  );
+}
+```
 
 ## Facade Pattern
 
