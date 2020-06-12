@@ -587,8 +587,8 @@ The approach is slightly different though. instead of making you consider the co
 
 This principle states two essential things:
 
-- High-level modules should not depend on low-level modules. Both should depend on abstractions.
-- Abstractions should not depend upon details. Details should depend on abstractions.
+- High-level modules should not depend on low-level modules. Both should depend on abstractions (that is, interfaces) 
+- Abstractions should not depend on details. Details (such as concrete implementations) should depend on abstractions
 
 This can be hard to understand at first, but if you've worked with AngularJS, you've seen an implementation of this principle in the form of Dependency Injection (DI). While they are not identical concepts, DIP keeps high-level modules from knowing the details of its low-level modules and setting them up. It can accomplish this through DI. A huge benefit of this is that it reduces the coupling between modules. Coupling is a very bad development pattern because it makes your code hard to refactor.
 
@@ -672,8 +672,6 @@ inventoryTracker.requestItems();
 
 **Another example**
 
-**DIP**
-
 We shouldn’t have to know any implementation details of our dependencies. If we do, then we violated this principle.
 
 We need this principle because if we do have to reference the code for the implementation details of a dependency to use it, then when the dependency changes, there’s going to be lots of breaking changes to our own code.
@@ -705,3 +703,92 @@ class Foo {
 ```
 
 We don’t have to worry about `ClassA`, `ClassB` and `ClassC` to implement the `Foo` class. As long as the Facade class doesn’t change, we don’t have to change our own code.
+
+**Extended explanation**
+
+1. High-level modules should not depend on low-level modules. 
+  - This can be thought of as Law of Demeter (LoD) where we concern ourselves with least knowledge and separation of high level from low level. 
+  - Our abstractions should be separated (decoupled) in such a way that we can easily change low-level implementation details at a later date without having to refactor all of our code.
+
+2. Both should depend on abstractions (that is, interfaces). Abstractions should not depend on details. Details (such as concrete implementations) should depend on abstractions
+  - The dependency inversion principle, in its second point, suggests that we do this via **intermediary abstractions** through which the high-level modules can *interface* with the low-level details. These intermediary abstractions are sometimes known as **adapters**, as they _adapt a low-level abstraction for consumption by a high-level abstraction_.
+
+The dependency inversion principle asks us to consider how we can abstract away low level concerns to an intermediary abstraction that acts as a bridge between high-level and low-level.
+
+```javascript
+// Bad!
+class Calendar {
+  getEventsAtLocation(targetLocation, kilometerRadius) {
+    const geocoder = new GeoCoder();
+    const distanceCalc = new DistanceCalculator();
+    
+    return this.events.filter(event => {
+      const eventLocation = event.location.address
+        ? geocoder.geocode(event.location.address)
+        : event.location.coords;
+      return distanceCalc.haversineFormulaDistance(
+        eventLocation,
+        targetLocation
+      ) / 1000;
+    });
+  }
+  // ... 
+}
+```
+
+The `Calendar` class is a high-level abstraction, concerned with the broad concepts of a calendar and its events. The `getEventsAtLocation` method, however, contains a lot of location-related details that are more of a low-level concern.
+
+```javascript
+// Good!
+const distanceCalculator = new DistanceCalculator();
+const geocoder = new GeoCoder();
+const METRES_IN_KM = 1000;
+
+class EventLocationCalculator {
+  constructor(event) {
+    this.event = event;
+  }
+ getCoords() {
+    return this.event.location.address
+      ? geocoder.geocode(this.event.location.address)
+      : this.event.location.coords
+  }
+ calculateDistanceInKilometers(targetLocation) {
+    return distanceCalculator.haversineFormulaDistance(
+      this.getCoords(),
+      targetLocation
+    ) / METRES_IN_KM;
+  }
+}
+
+class Event {
+ constructor() {
+    // ...
+    this.locationCalculator = new EventLocationCalculator();
+  }
+   isEventWithinRadiusOf(targetLocation, kilometerRadius) {
+    return locationCalculator.calculateDistanceInKilometers(
+      targetLocation
+    ) <= kilometerRadius;
+  }
+  // ...
+}
+
+class Calendar {
+   getEventsAtLocation(targetLocation, kilometerRadius) {
+    return this.events.filter(event => {
+      return event.isEventWithinRadiusOf(
+        targetLocation,
+        kilometerRadius
+      );
+    });
+  }
+  // ...
+}
+```
+
+**NOTE**
+
+The dependency inversion principle is similar to other principles that are related to the delineation of abstractions, such as the interface segregation principle, but is specifically concerned with dependencies and how these dependencies are directed. As we design and build abstractions, we are, implicitly, setting up a **"dependency graph"** (For example, `Calendar` depends on `Event` which depends on `EventLocationCalculator` which depends on two things: `DistanceCalculator` and `GeoCoder`).
+
+**Dependency graph** lets us observe where, if anywhere, our low-level implementations (details) impact our high-level abstractions. 

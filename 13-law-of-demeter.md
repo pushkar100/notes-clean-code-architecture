@@ -312,3 +312,7 @@ The code above is bad because we have to get the `Bar` instance with `getBar`, a
 That’s **fragile** code, because if anything in the chain breaks, then the whole thing breaks.
 
 Any of them changing will become an issue. We should take out this transitive navigation code by changing the implementation so that we don’t have this kind of structure.
+
+### Another way to think of Law of Demeter
+
+Separation of high level from low level (Decoupling).
