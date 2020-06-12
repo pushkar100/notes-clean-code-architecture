@@ -507,7 +507,7 @@ The question we need to ask with respect to LSP is: _What is the least informati
 
 ## 4. Interface Segregation Principle (ISP)
 
-avaScript doesn't have interfaces so this principle doesn't apply as strictly as others. However, it's important and relevant even with JavaScript's lack of type system.
+JavaScript doesn't have interfaces so this principle doesn't apply as strictly as others. However, it's important and relevant even with JavaScript's lack of type system.
 
 ISP states that "Clients should not be forced to depend upon interfaces that they do not use." Interfaces are implicit contracts in JavaScript because of duck typing.
 
@@ -570,6 +570,18 @@ const $ = new DOMTraverser({
   }
 });
 ```
+
+**Alternate explanation**
+
+ISP is closely linked to SRP: Cohesive, focused abstractoins
+
+The approach is slightly different though. instead of making you consider the concept of responsibility itself, it makes you look at the interfaces that you're creating and consider whether they're appropriately segregated.
+
+**Benefits of ISP**
+
+- RELIABILITY: Having properly isolated interfaces that are truly decoupled makes code easier to test and verify, thereby aiding its general reliability and stability over time.
+- MAINTAINABILITY: Having segregated interfaces means that changes to one needn't affect the others
+- USABILITY: Having interfaces that are separated according to their purpose and function means that users are able to understand and navigate the interfaces with far less time and cognitive effort. The users are the consumers of our interfaces, and so are the most dependent on the interfaces being clearly delineated.
 
 ## 5. Dependency Inversion Principle (DIP)
 
