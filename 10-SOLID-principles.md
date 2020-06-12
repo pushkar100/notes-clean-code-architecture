@@ -462,6 +462,49 @@ renderLargeShapes(shapes);
 
 This means that the child class must implement everything that’s in the parent class. The parent class has the base members that child classes extend from.
 
+**Alternate explanation**
+
+"A consumer of a type should only be concerned with the least specific type necessary to operate it reliably". Types should be able to be replaced by their subtypes without altering the reliability of the program.
+
+```javascript
+// Good!
+class ImportantEvent extends Event {
+  renderNotification() {
+    return `Urgent! ${super.renderNotification()}`;
+  }
+}
+
+class Event {
+  renderNotification() {
+    return "Some notification message";
+  }
+}
+
+class Calendar {
+  getEventsWithinMinutes(minutes) {
+    return this.events.filter(event => {
+      return event.startsWithinMinutes(minutes);
+    });
+  }
+  notifiyUpcomingEvents() {
+    this.getEventsWithinMinutes(10).forEach(event => {
+      this.sendNotification(
+        event.renderNotification()
+      );
+    });
+  }
+ // ...
+}
+```
+
+The `Calendar` class (consumer) deals with events. However, it need not care "what type of event" it is dealing with from its perspective. It only needs know that it can notify its user what the upcoming events are and so on. Therefore, the `ImportantEvent` class is expected to have a `renderNotification` method just like the base `Event` class.
+
+**The tenet of clean code that LSP emphasizes**
+
+_MAINTAINABILITY_ since it is closely linked to LoD (Law of Demeter)
+
+The question we need to ask with respect to LSP is: _What is the least information that this abstraction requires in order to fulfill its purpose?_
+
 ## 4. Interface Segregation Principle (ISP)
 
 avaScript doesn't have interfaces so this principle doesn't apply as strictly as others. However, it's important and relevant even with JavaScript's lack of type system.
