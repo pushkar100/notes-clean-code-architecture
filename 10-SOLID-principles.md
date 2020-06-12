@@ -10,13 +10,17 @@ SOLID consists of 5 concepts that we can use to make our programs better:
 - **I**: Interface Segregation Principle (ISP)
 - **D**: Dependency Inversion Principle (DIP)
 
+It's important to note that, while SOLID relates mostly to OOP, there are deeper truths underlying it that are useful regardless of your programming paradigm.
+
 ## 1. Single Responsibility Principle (SRP)
 
-"There should never be more than one reason for a class to change". 
+_"There should never be more than one reason for a class to change"._
 
 It's tempting to jam-pack a class with a lot of functionality, like when you can only take one suitcase on your flight. The issue with this is that your class won't be conceptually cohesive and it will give it many reasons to change. 
 
-**Minimizing the amount of times you need to change a class is important**. It's important because if too much functionality is in one class and you modify a piece of it, it can be difficult to understand how that will affect other dependent modules in your codebase.
+**Minimizing the amount of times you need to change a class is important**
+
+It's important because if too much functionality is in one class and you modify a piece of it, it can be difficult to understand how that will affect other dependent modules in your codebase.
 
 ```javascript
 // Bad!
@@ -104,6 +108,60 @@ class Rectangle {
 ```
 
 The Rectangle class above only has the length and width of a rectangle as members and lets us get the area from it. It does nothing else, so it follows the single responsibility principle.
+
+**Another attempt at explaining SRP**
+
+Whenever we write code, we are creating abstractions. How to delineate (describe exactly, position properly) abstractions in the right way is what SRP deals with.
+
+The aims of the SRP are to arrive at code that is highly **cohesive**. Cohesiveness is when an abstraction's parts are all functionally united in some way, where they can all be said to work together to fulfill the abstraction's purpose.
+
+_"How many reasons do we have for a class to change?". Ideally, it shouldn't be more than one_
+
+```javascript
+// Bad!
+class Calendar {
+  addEvent(event) {...}
+  removeEvent(event) {...}
+  getEventsBetween(stateDate, endDate) {...}
+  setTimeOfEvent(event, startTime, endTime) {...}
+  setTitleOfEvent(event, title) {...}
+  exportFilteredEventsToXML(filter) {...}
+  exportFilteredEventsToJSON(filter) {...}
+}
+
+class Event {}
+```
+
+The calendar class has so many reasons to change:
+1. If the way time is defined, we need to change it
+2. If the way events are searched for (in between time) changes
+3. The way titles are defined on events may need to change
+4. There are changes to way XML and JSON is exported. For ex: Schema changes
+
+Why is a high level class like calendar worrying about details of event setting and search? Why is the export functionality not an abstraction of its own - calendar is not directly responsible for it!
+
+```javascript
+// Good!
+class Event {
+  setTime(startTime, endTime) {...}
+  setTitle(title) {...}
+}
+
+class Calendar {
+  addEvent(event) {...}
+  removeEvent(event) {...}
+  getEventsBetween(startDate, endDate) {...}
+}
+
+class CalendarExporter {
+  exportFilteredEventsToXML(filter) {...}
+  exportFilteredEventsToJSON(filter) {...}
+}
+```
+
+**The tenets of clean code emphasized by SRP**
+
+The SRP is not only about creating abstractions that are simple to use and maintain (like the Law of Demeter), it also allows us to write code that is more **focused** (by way of cohesiveness of an abstraction's methods and properties) on its key purpose.
 
 ## 2. Open/Closed Principle (OCP)
 
