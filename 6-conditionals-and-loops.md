@@ -547,3 +547,113 @@ function doesSomething(value) {
   }
 }
 ```
+
+## 15. Remove Cyclomatic Complexity
+
+Cyclomatic complexity is a measure of how many linearly independent paths there are through a program's code.
+
+```javascript
+// Bad!
+if (a) {
+  A()
+  if (b) {
+    B()
+  }
+  if (c) {
+    C()
+  }
+}
+if (d) {
+  D()
+}
+```
+
+There are `9` different paths that an execution can take:
+
+- A()
+- A(), B()
+- A(), B(), C()
+- A(), B(), C(), D()
+- A(), B(), D()
+- A(), C()
+- A(), C(), D()
+- A(), D()
+- D()
+
+Cyclomatic complexity is **undesirable**!
+
+- **Cognitive burden:** Cyclomatically complex code can be difficult for programmers to understand. Code with many branches is difficult to internalize and hold in our minds and therefore harder to maintain or change. 
+- **Unpredictability:** Cyclomatically complex code can be unpredictable, especially if rare situations occur where there is, for example, an unforeseen state transition or underlying change of data.  
+- **Fragility:** Cyclomatically complex code can be fragile in the face of change. Changing one line can have a disproportionate effect on the functionality of many other lines.
+- **Bugginess:** Cyclomatically complex code can cause obscure bugs. If there are a dozen or more code paths within a singular function, then it's possible for a maintainer to not see all of them, leading to regressions
+
+**Identifying and avoiding cyclomatic complexity**
+
+- Too many `if/else/if` combinations (Ex: More than an `if` and an `else`)
+- If has too many sub-conditions (Nested ifs)
+- Switch has too many sub-conditions in each case (Ex: Many `if-else`'s in a case)
+- Switch has too many cases (Ex: More than 5, 10, 20; Depends on the context)
+
+Basically, we can make our code **more declarative!**. For example, use built in functions like `map`,`reduce`, `filter`, `forEach`, etc. Abstract out complex conditionals into functions with readable and meaningful names.
+
+**Example of removing Cyclomatic Complexity**
+
+```javascript
+// Bad!
+function getIDsFromLicenses(licenses) {
+  const ids = [];
+  for (let i = 0; i < licenses.length; i++) {
+    let license = licenses[i];
+    if (license.id != null) {
+      if (license.id.indexOf('c') === 0) {
+        let nID = Number(license.id.slice(1));
+        if (nID >= 1000000) {
+          ids.push({ type: 'car', digits: nID });
+        } else {
+          ids.push({ type: 'car_old', digits: nID });
+        }
+      } else if (license.id.indexOf('h') === 0) {
+        ids.push({
+          type: 'hgv',
+          digits: Number(license.id.slice(1))
+        });
+      } else if (license.id.indexOf('m') === 0) {
+        ids.push({
+          type: 'motorcycle',
+          digits: Number(license.id.slice(1))
+        });
+      }
+    }
+  } 
+  return ids;
+}
+```
+
+```javascript
+// Good!
+function getIDsFromLicenses(licenses) {
+  return licenses
+    .map(license => license.id)
+    .filter(Boolean)
+    .map(id => getIDFields(
+      id.charAt(0),
+      Number(id.slice(1))
+    ))
+}
+
+function getIDFields(idType, digits) {
+  switch (idType) {
+    case 'c': return {
+      type: digits >= 1000000 ? 'car' : 'car_old',
+      digits
+    };
+    case 'h': return { type: 'hgv', digits };
+    case 'm': return { type: 'motorcycle', digits };
+  }
+}
+```
+
+Benefits of the above code:
+
+- We can test each individual abstraction separately. Ex: test `getIDFields` on its own
+- We have extracted repeated logic (Ex: Doing `indexOf` everytime) and generalized it (DRY principle)
