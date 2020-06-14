@@ -355,6 +355,178 @@ let renameFile = () => {
 };
 ```
 
+## 8. Purpose, Concept, and Contract
+
+A good name might have these characteristics:
+
+- Purpose: What something is for and how it behaves 
+- Concept: Its core idea and how to think about it
+- Contract: Expectations about how it works
+
+Following these enhances _MAINTAINABILITY_ and _FAMILIARITY_ since some of them are conventions
+
+1. Purpose is highly contextual
+
+```javascript
+// Bad! Too much or unnecesary context
+class TenancyAgreement {
+  saveSignedDocument(
+    tenancyAgreementSignedDocumentID,
+    tenancyAgreementSignedDocumentTimestamp
+  ) {}
+}
+```
+
+```javascript
+// Good! Just enough context
+class TenancyAgreement { // `TenancyAgreement` is the "namespace" for the names that exist inside it
+  saveSignedDocument(
+    documentID,
+    documentTimestamp
+  ) {}
+}
+```
+
+Advice from "Clean Code in Javascript": "When we have a surrounding context that communicates its purpose well, we shouldn't need to granularize the naming of every variable within that context"
+
+2. For a function, the purpose is its **behavior**
+
+It means the way in which a function acts or conducts itself on things it manipulates. That is its purpose. Put simply, it means the "Way in which it works". Ex: `isTruthy()` works by checking if something passed to it is truthy, `saveSignedDocument` works by saving a signed document.
+
+3. For functions, `one verb + one adjective + one noun` at the most must suffice usually. (Ex: `refreshSignedDocument()` where refesh is a verb, signed is an adjective, document is the noun)
+
+4. If a name requires a comment to explain its purpose, then that is usually an indicator that it has not done its job as a name.
+
+5. Common contracts:
+  - Variables and functions starting with `is` contain or return booleans. (Ex: `isMetal`, `isDependentOfModule(dependency)`)
+  - Constant values are assigned to variables in all-caps. (Ex: `const DEFAULT_TIME_LIMIT = 3600`)
+  - Plural variable names include more than one value - such as arrays (Ex: `const names = ['Rahul', 'Pushkar']`). Conversely, singular variable names are expected to contain a single value
+  - Functions with names beginning with `get`, `find`, or `select` are usually expected to return something to you (Ex: `getIds()`, `selectLongestYear(years)`, `findNode(nodes)`)
+  - Properties starting with underscore (`_`) are meant to private (pseudo) and not supposed to be accessed by outside code. (Ex: `_processConfig()`)
+  - camelCase for naming functions. (Ex: `getStuffDone()`)
+  - PascalCase for naming classes and constructor functions. (Ex: `SuperArray`, `SomeClassName`)
+
+## 9. Naming anti-patterns
+
+1. Needlessly short names
+
+Such names make it less clear about what the abstraction is! Use clear names.
+
+```javascript
+// Bad!
+function incId(id, f) {
+  for (let x = 0; x < ids.length; ++x) {
+    if (ids[x].id === id && f(ids[x])) {
+      ids[x].n++;
+    }
+  }
+}
+```
+
+```javascript
+// Good!
+function incrementJobInstancesByIdIfFilter(id, filter) {
+  for (let i = 0; i < jobs.length; i++) { // Note: `i` is fine (Over time, loop counters have come to be assigned single character variables)
+    let job = jobs[i];
+    if (job.id === id && filter(job)) {
+      job.nInstances++;
+    }
+  }
+} 
+```
+
+2. Needlessly exotic (fancy) names
+
+Such names draw unnecessary attention and makes you look cool but it is actually hard for others to understand (obscures the meaning)
+
+- Keep it simple. Use `delete` over `kill` or `obliterate`
+- Don't create fancy words like `deletify` or `dedupify` 
+- Avoid puns or clever insinuations. Ex: Using chemical element names for DOM elements
+
+3. Needlessly long names
+
+Long names are a clue to a broken or confused abstraction
+
+```javascript
+// Bad!
+documentManager.refreshAndSaveSignedAndNonPendingDocuments();
+```
+
+With names this long, a good guideline is to refactor the underlying abstraction so that we only need a name with, at most, one verb, one adjective, and one noun. 
+
+- Verb: action, state, or occurrence (Ex: `hear`, `become`, `happen`, `do`, `get`, `set`, `find`, etc)
+- Adjective: An attribute (description or modification) of a noun (Ex: `sweet`, `red`, `technical`, `pending`, `skilled`, etc)
+- Noun: Denotes people, place, or things (if general, it is a "common noun" and if specifc, it is a "proper noun") (Ex: `Toyota`, `Person`, `Employee`, `Document`, `Card`, `Bundle`, etc)
+
+```javascript
+// Good!
+documentManager.refreshSignedDocuments();
+documentManager.refreshNonPendingDocuments();
+documentManager.saveSignedDocuments();
+documentManager.saveNonPendingDocuments();
+
+// We have forced ourselves to better abstract our code just by thinking about the name!
+```
+
+## 10. Use hierarchy as context for naming things
+
+Our folder, module, class, and function structures all contribute to NAMESPACING within which we can have appropriate names (omitting the unnecessary context). A good hierarchy should give rise to appropriate naming within it that makes use of the hierarchy
+
+```javascript
+// Bad!
+app/
+|-- deepClone.js
+|-- deepEquality.js
+|-- getParamsFromURL.js
+|-- getURL.js
+|-- openModal.js
+|-- openModalWithTemplate.js
+|-- setupAppWithCustomConfig.js
+|-- setupAppWithDefaultConfig.js
+|-- setURL.js
+|-- ...
+```
+
+```javascript
+// Good!
+app/
+|-- setup/
+|   |-- defaultConfig.js
+|   |-- setup.js
+|-- modal/
+|   |-- open.js
+|   |-- openWithTemplate.js
+|-- utils/
+    |-- url/
+    |   |-- getParams.js
+    |   |-- get.js
+    |   |-- set.js
+    |-- obj/
+        |-- deepEquality.js
+        |-- deepClone.js
+```
+
+## 11. Use hungarian notation but only for specific cases
+
+Hungarian notation prefixes or suffixes the tyepe of the value. Initally considered to be good for dynamically typed languages.
+
+This is a controversial guideline. Many people are against using hungarian notation to specify the type of a value because it adds **noise** and increases **code rigidity** (we may instead use methods like duck typing to prevent wrong types of objects being passed to it).
+
+- Don't use it for built in types
+- It may be okay to use it for domain or platform specific types. (Ex: A DOM element prefixed with `el` makes it very clear what type of value this is)
+
+Example:
+
+```javascript
+// Bad!
+const arrNames = ['Matt', 'Ram', 'Sita']
+
+// Good!
+const elHeader = document.getElementById('header') // How about `$header`?
+```
+
+If you care too much about types and type checking in code, use a type checker tool like **typescript** or **flow**
+
 ## Conclusion
 
 Software application that will be maintained over a considerable time or will be developed by several developers, it is when we will have the need to read and reread our source code. At this time, the name we assign to our variables will give us a touch of quality and clean code.
