@@ -494,3 +494,65 @@ import { color } from './fruit'
 console.log(color);
 ```
 
+## 12. Returning early as a way to remove conditional complexity
+
+Returning is not only useful for shifting control from one function to another. By **returning early** we are using its side-effect which is avoiding work that exists on lines below itself
+
+```javascript 
+// Bad!
+function isDancer(person) {
+  if (person) {
+    if (person.hasMoves && person.hasMoves.length) {
+      if (person.hasMoves.type === 'DANCE') {
+        return true
+      } else {
+        return false
+      }
+    }
+  } else {
+    return false;
+  }
+}
+```
+
+By employing pre-emptive input checks, we are reducing the complexity and the congitive burden on the user. Hence, readabilty is improved too! 
+
+```javascript 
+// Good!
+function isDancer(person) {
+  if (!person || !(person.hasMoves && person.hasMoves.length)) {
+    return false
+  }
+
+  if (person.hasMoves.type === 'DANCE') {
+    return true
+  }
+
+  return false
+}
+```
+
+```javascript 
+// Even better!
+function isDancer(person) {
+  if (hasNoValidMoves(person)) {
+    return false
+  }
+
+  if (isMoveTypeDance(person.hasMoves.type)) {
+    return true
+  }
+
+  return false
+}
+
+function hasNoValidMoves(person) {
+  const { hasMoves } = person || {}
+  return !(hasMoves && hasMoves.length)
+}
+
+function isMoveTypeDance(type) {
+  const DANCE_MOVE_TYPE = 'DANCE'
+  return type === DANCE_MOVE_TYPE
+}
+```
