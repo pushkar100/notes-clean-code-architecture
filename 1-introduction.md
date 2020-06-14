@@ -1,19 +1,5 @@
 # Introduction
 
-Learn some core concepts of clean code.
-
-[Link to series of articles](https://dev.to/carlillo/clean-code-applied-to-javascript-part-i-before-your-start-16ic)
-
-[Link to Ryan's repo](https://github.com/ryanmcdermott/clean-code-javascript)
-
-[Jecelyn Yeen on Scotch.io](https://scotch.io/tutorials/5-tips-to-write-better-conditionals-in-javascript#toc-1-use-array-includes-for-multiple-criteria)
-
-[Level Up Medium articles by John Au Yeung](https://levelup.gitconnected.com/@hohanga)
-
-[FreeCodeCamp on Youtube - Clean Code (Beau Teaches Javascript)](https://www.youtube.com/playlist?list=PLWKjhJtqVAbkK24EaPurzMq0-kw5U9pJh)
-
-[Clean Code in Javascript](https://github.com/PacktPublishing/Clean-Code-in-JavaScript)
-
 ## What is Clean Code?
 
 Code that is **Readable**, **Reusable**, and **Refactorable**

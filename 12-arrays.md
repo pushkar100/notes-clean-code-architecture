@@ -72,3 +72,19 @@ function test() {
 let cities = ['London', 'Delhi', 'Tel Aviv', 'Delhi', 'Sydney', 'Sydney']
 cities = [ ...new Set(cities)]
 ```
+
+## 4. Use sets instead of arrays when you need unique values
+
+Set and WeakSet are native abstractions that allow us to store sequences of unique objects.
+
+Set and WeakSets: WeakSets are for weakly holding values in a way that allows that value to be garbage-collected in another part of the program
+
+```javascript
+const foundNumbersArray = [1, 2, 3, 4, 3, 2, 1];
+const foundNumbersSet = new Set([1, 2, 3, 4, 3, 2, 1]);
+
+foundNumbersArray; // => [1, 2, 3, 4, 3, 2, 1]
+foundNumbersSet;   // => Set{ 1, 2, 3, 4 }
+
+new Set('wooooow'); // => Set{ 'w', 'o' }
+```

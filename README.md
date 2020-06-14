@@ -33,3 +33,5 @@ Collection of tips and techniques for clean code have been taking from, apart fr
 ### Books
 
 [Clean Code in Javascript](https://github.com/PacktPublishing/Clean-Code-in-JavaScript)
+
+[Simplifying Javascript](https://www.amazon.in/Simplifying-JavaScript-Writing-Modern-Beyond-ebook/dp/B07DF752X8)
