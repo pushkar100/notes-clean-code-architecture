@@ -2,7 +2,9 @@
 
 Clean coding principles in javascript collected from various articles and other sources
 
-## Repo was built from the following excellent sources of knowledge
+## Repo was inspired from the following excellent sources of knowledge
+
+Collection of tips and techniques for clean code have been taking from, apart from the owner's own experience in writing and reviewing code, the following resources:
 
 [Link to series of articles](https://dev.to/carlillo/clean-code-applied-to-javascript-part-i-before-your-start-16ic)
 

@@ -592,3 +592,16 @@ function generateWelcomeMessage(language) {
   }
 }
 ```
+
+## 14. Do not invoke functions using `bind()`, `call()`, or `apply` unless dealing with low-level code
+
+The most readable, simple and easily understood method of invocation is the humble parentheses `()` which does not intentionally manipulate the `this` value. Ex: `someFunction()`
+
+**Use cases for `bind()`, `apply()`, or `call()`:**
+
+- Low level libraries consumed by others (Ex: DOM manipulation, logging tools, etc - you decide)
+- Utility functions that are used by other higher order code (such as react component code)
+
+**One reason why usage of `bind()` is frowned upon in React class components**
+
+There are many reason but the foundation for all those reasons is that `bind()` is a low level implementation specific code. React components, however, are already meant to be high level - with the low level aspects of it such as the reconciliation, DOM manipulation, etc already abstracted by `react` and `reactDOM` libraries themselves. So, why should I, as consumer of react, deal with the low level complexities? (**Note**: Hooks solve this problem)
