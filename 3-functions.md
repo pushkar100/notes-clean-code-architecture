@@ -556,3 +556,39 @@ function isMoveTypeDance(type) {
   return type === DANCE_MOVE_TYPE
 }
 ```
+
+## 13. If dealing primarily with switch cases, return directly from each case
+
+It reduces the cognitive load on the user by removing the need to process what is below the switch case or below the switch construct itself. Improves readability.
+
+```javascript
+// Good!
+function generateWelcomeMessage(language) {
+  let message;
+
+  switch (language) {
+    case 'DE':
+      message = 'Willkommen!';
+    case 'FR':
+      message = 'Bienvenue!';
+    default:
+      message = 'Welcome!';
+  }
+
+  return message;
+}
+```
+
+```javascript
+// Good!
+function generateWelcomeMessage(language) {
+  switch (language) {
+    case 'DE':
+      return 'Willkommen!';
+    case 'FR':
+      return 'Bienvenue!';
+    default:
+      return 'Welcome!';
+  }
+}
+```
