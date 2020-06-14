@@ -683,3 +683,106 @@ class SuperArray extends Array {
 const superList = new SuperArray('a', 'b', 'c' , 'd');
 superList.alternateCase() // ["A", "b", "C", "d"]
 ```
+
+## 15. Use `Symbol`s in objects for storing "hidden" properties
+
+We don't have to use symbols for every property of an object. 
+
+Since Symbol keys exist in an explicit but hidden manner, they are useful for storing programmatic information semantically that's unrelated to the core data of the object but useful in fulfilling some programmatic need.
+
+```javascript
+// Good!
+log.CUSTOM_RENDER = Symbol();
+
+class Person {
+  constructor(name) {
+    this.name = name;
+    this[log.CUSTOM_RENDER] = () => {
+      return `Person (name = ${this.name})`;
+    };
+  }
+}
+
+const log = thing => {
+ console.log(
+   thing[log.CUSTOM_RENDER] ?
+     thing[log.CUSTOM_RENDER](thing) :
+     thing
+ );
+};
+
+log(123); // => Logs "123"
+log(new Person('Sarah')); // => Logs: "Person (name = Sarah)"
+```
+
+In the above code, you may wish to annotate certain objects with a custom logging function that lets you privately analyze the contents of the object. This is perhaps not used directly by a consumer of Person and cannot be as well.
+
+**Benefits of using Symbols as hidden properties:**
+
+- “Hidden” object properties. If we want to add a property into an object that “belongs” to another script or a library, we can create a symbol and use it as a property key. 
+- A symbolic property does not appear in `for..in`, so it won’t be accidentally processed together with other properties. 
+- Also it won’t be accessed directly, because another script does not have our symbol. So the property will be protected from accidental use or overwrite.
+
+**Note**
+- There are not many everyday situations that would necessitate the creation and usage of new symbols.
+- **Symbol.iterator** is used inside many systems as a custom iterator function on themselves
+
+## 16. Use `null` for intentional absence of value (`undefined` otherwise)
+
+`null` is used to express the intentional absence of a value.
+
+`undefined` is used to indicate something that is not declared or defined
+
+```javascript
+// Example
+function setRestaurantFeatures(features) {
+  if (features.hasParking) {
+    // This will not run if hasParking is null
+  }
+}
+
+setRestaurantFeatures({
+  hasWifi: false,
+  hasDisabledAccess: true,
+  hasParking: null
+});
+```
+
+## 17. Use object literals for most creation purposes (simple cases)
+
+The object literal `{}` is the most simple declaration of an object. There is also no "preparation" of an object beforehand in order to use (as opposed to creating it in other ways)
+
+```javascript
+// Good!
+var myObj = {
+  name: 'someName',
+  age: 10
+}
+```
+
+Of course, this is the most popular way of creating objects. There are exceptions where you'd want to instantiate a class, define the properties of an object and so on where an object literal initialization falls short of the requirements.
+
+## 18. Use a `Map` or a `WeakMap` only when you need to store non-primitive keys
+
+**Map vs WeakMap:** WeakMap keys will be delete or lost if the JS compiler garbage collects the data structure being used as the key
+
+```javascript
+// CANNOT DO! Error!!
+const map = {}
+
+const functionId = function () { /* something */ }
+const value = 100
+
+map[functionId] =  value // Error!
+```
+
+```javascript
+// Good!
+const map = new Map()
+
+const functionId = function () { /* something */ }
+const value = 100
+
+map.set(functionId, value)
+map.get(functionId) // 100
+``` 
