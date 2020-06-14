@@ -84,3 +84,35 @@ async function getCleanCodeArticle() {
 
 getCleanCodeArticle()
 ```
+
+## 3. Callbacks versus Promises versus Async/await
+
+**Callbacks = Inversion of Control**
+
+The function you pass a callback to is entirely in control of when your callback is invoked, how it is invoked, and what data is passed along with that invocation. This is why sometimes callbacks are spoken about as an inversion of control. We are relying on another function or abstraction to (at some point) call your callback in the expected manner.
+
+**Callbacks = Horizontal pyramids**
+
+Callback hell is the name given to the undesirable proliferation of multiple nested callbacks within a piece of code, usually done to carry out a series of asynchronous tasks that each rely on another previous asynchronous task.
+
+```javascript
+async(task, () => {
+  async(task, () => {
+    async(task, () => {
+      async(task, () => {
+        async(task, () => {
+          async(task, () => {
+            // Something
+          })
+        })
+      })
+    })
+  })
+})
+```
+
+**Solving the horizontal pyramid**
+
+- Choose an event emitter system (OR)
+- Choose a promise (OR)
+- Choose async/await
