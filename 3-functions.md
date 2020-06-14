@@ -604,4 +604,269 @@ The most readable, simple and easily understood method of invocation is the humb
 
 **One reason why usage of `bind()` is frowned upon in React class components**
 
-There are many reason but the foundation for all those reasons is that `bind()` is a low level implementation specific code. React components, however, are already meant to be high level - with the low level aspects of it such as the reconciliation, DOM manipulation, etc already abstracted by `react` and `reactDOM` libraries themselves. So, why should I, as consumer of react, deal with the low level complexities? (**Note**: Hooks solve this problem)
+There are many reason but the foundation for all those reasons is that `bind()` is a low level implementation specific code. React components, however, are already meant to be high level - with the low level aspects of it such as the reconciliation, DOM manipulation, etc already abstracted by `react` and `react-dom` libraries themselves. So, why should I, as consumer of react, deal with the low level complexities? (**Note**: Hooks solve this problem)
+
+**A. Partial applications are a good reason to use them** 
+
+A great use case for bind is Partial Applications of functions. (i.e. giving a function only some of it’s arguments).
+
+```javascript
+// Good!
+function list(...args) {
+  return [...args]
+}
+
+function addArguments(arg1, arg2) {
+  return arg1 + arg2
+}
+
+const list1 = list(1, 2, 3);
+//  [1, 2, 3]
+
+const result1 = addArguments(1, 2);
+//  3
+
+// Create a function with a preset leading argument
+const leadingThirtysevenList = list.bind(null, 37);
+
+// Create a function with a preset first argument.
+const addThirtySeven = addArguments.bind(null, 37); 
+
+const list2 = leadingThirtysevenList(); 
+//  [37]
+
+const list3 = leadingThirtysevenList(1, 2, 3); 
+//  [37, 1, 2, 3]
+
+const result2 = addThirtySeven(5); 
+//  37 + 5 = 42 
+
+const result3 = addThirtySeven(5, 10);
+//  37 + 5 = 42 
+//  (the second argument is ignored)
+```
+
+**A. Async stuff when you want to control `this` when function is invoked is another use-case** 
+
+For example, in React we bind our async callbacks that are sent to events as callback (Ex: Form `onSubmit` event). As much as it is frowned upon from a design perspective, for the component to work as expected, it is a necessity to bind the function that will be executed async. Therefore, apart from the debates on the library's design, for a consumer of it, it is a perfectly valid scenario to use `bind` for this purpose
+
+## 15. Function declarations vs Expressions vs Arrow Functions
+
+There are many ways to declare a function. The following tips can help you decide which one to use.
+
+1. **Use arrow function for traditional lambda methods (Pure functions)**
+
+For callbacks or handlers not manipulating `this`, use arrow functions. A good example would be inside functional programming style methods such as array built-ins: `filter`, `map`, `reduce`, etc.
+
+```javascript
+// Good!
+const hasId = item => item.id !== undefined
+const renderItem = ({ name, id}) => `${id}: ${name}`
+
+function getMarkupForItemsWithIds(items) {
+  return items
+    .filter(hasId)
+    .map(renderItem)
+}
+```
+
+The above code is clean because the _readability_ has increased with arrow functions. It is a very _succinct_ syntax.
+
+2. **Use arrow function for promise chains**
+
+It is a callback and does not get invoked with any particular `this`. Therefore, it is the perfect place to use arrow functions. 
+
+The reasons are same: Readability and succinctness. If we receive a state and return is a manipulation of that, arrow functions make it even more readable
+
+```javascript
+// Good!
+someAPIPromise
+  .then(response => dispatch({
+    type: API_RESPONSE,
+    payload: response.data
+  }))
+  .catch(error => {
+    throw new ApiError(error)
+  })
+```
+
+3. **Use arrow function for object transformations**
+
+```javascript
+// Good!
+export default {
+  computed: {
+    ...mapState({
+      results: state => state.results,
+      users: state => state.users,
+    });
+  }
+}
+```
+
+4. **Use function expressions where `this` is dynamic (a.k.a Do not use arrow functions)**
+
+Limitations of arrow functions:
+
+- It does not provide access to bindings such as `this` or `arguments`
+
+```javascript
+// Bad! Will give unexpected results
+class Counter {
+  // Using the class-properties proposal 
+  // Not valid syntax without the babel plugin for it:
+  counter = 0;
+
+  handleClick = () => {
+    this.counter++;
+  }
+
+  constructor() {
+    // Binding is useless!! The following line does not work!
+    this.handleClick = this.handleClick.bind(this);
+  }
+}
+```
+
+```javascript
+// Good!
+class Counter {
+  counter = 0;
+
+  handleClick() {
+    this.counter++;
+  }
+
+  constructor() {
+    this.handleClick = this.handleClick.bind(this);
+  }
+}
+```
+
+- It does not have a prototype property, so it cannot be used as a constructor. Therefore, it is not a good idea to use it as a `class`, `object`, or `prototype` method!
+
+```javascript
+class FooBear {
+  name = 'Foo Bear';
+}
+```
+
+```javascript
+// Bad!
+FooBear.prototype.sayHello = () => `Hello I am ${this.name}`
+
+new FooBear().sayHello() // "Hello I am "
+```
+
+```javascript
+// Good
+FooBear.prototype.sayHello = function() {
+  return `Hello I am ${this.name}`;
+};
+new FooBear().sayHello() // "Hello I am Foo Bear" 
+
+// Same logic applies to object and class methods!
+```
+
+An object method example:
+
+```javascript
+// Bad!
+const calculate = {  
+  array: [1, 2, 3],
+  sum: () => {
+    console.log(this === window); // => true
+    return this.array.reduce((result, item) => result + item);
+  }
+};
+console.log(this === window); // => true
+// Throws "TypeError: Cannot read property 'reduce' of undefined"
+calculate.sum();
+```
+
+```javascript
+// Good!
+const calculate = {  
+  array: [1, 2, 3],
+  sum: function() { // Or `sum() {` which is the same thing!
+    console.log(this === window); // => false
+    return this.array.reduce((result, item) => result + item);
+  }
+};
+console.log(this === window); // => true
+calculate.sum(); // 6
+```
+
+A constructor example:
+
+```javascript
+// Bad!
+const MyCat = name => {
+  this.catName = name;
+}
+
+new MyCat('Alex').catName // Uncaught TypeError: MyCat is not a constructor
+```
+
+```javascript
+// Good!
+// In the case of constructors, it is more common to use a fn. declaration!
+function MyCat(name) {
+  this.catName = name;
+}
+
+new MyCat('Alex').catName // Alex
+```
+
+5. **Do not rely on hoisting when using function declarations**
+
+_Hoisting_ is not intuitive. As a JS developer, we are expected to know the concept but while reading through code, it takes more mental effort to map a function declared somewhere downstream in the scope to its usage much earlier in the same scope.
+
+```javascript
+// Bad!
+someFunction()
+
+// ... 
+// other things
+// ...
+
+function someFunction() {}
+```
+
+```javascript
+// Good!
+function someFunction() {}
+
+// ... 
+// other things
+// ...
+
+someFunction()
+```
+
+6. **Caution: Do not let arrow functions obscure the code too much**
+
+Arrow functions make everything succinct but too much of it can lead to loss of readability. Only the right amount makes it readable.
+
+```javascript
+// Bad!
+const multiply = (a, b) => b === undefined ? b => a * b : a * b;
+const double = multiply(2);
+double(3);      // => 6
+multiply(2, 3); // => 6
+```
+
+```javascript
+// Good!
+// Using arrow functions but with clarity:
+const multiply = (a, b) => {
+  if (b === undefined) {
+    return b => a * b
+  }
+  
+  return a * b;
+}
+const double = multiply(2);
+double(3);      // => 6
+multiply(2, 3); // => 6
+```
