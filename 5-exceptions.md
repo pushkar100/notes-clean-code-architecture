@@ -276,3 +276,24 @@ finally {
   // finallyCode - Block of code to be executed regardless of the try / catch result
 }
 ```
+
+## 7. Extend the Error class for semantically meaningful errors
+
+Excerpt from "Clean Code in JavaScript - Padolsey, James":
+
+> JavaScript will naturally raise such exceptions to you if you misuse native APIs or produce invalid syntax, but you can also use these constructors yourself to provide more semantically meaningful errors to your fellow programmers. If none of the preceding are suitable, then you can directly use Error or extend from it to produce your own specialized instance, as follows: `class NetworkError extends Error {}`
+
+```javascript
+// Good!
+async function makeDataRequest() {
+  let response
+  try {
+    response = await fetch('/data');
+  } catch(e) {
+    throw NetworkError('Cannot fetch data');
+  }
+  // ... (process response) ...
+}
+```
+
+There may be unique situations where you wish to throw a value that is not an Error instance, and technically, this is perfectly legal, but it is rarely useful to do so. It's best to only throw in the case of an actual error, and in that case, it is best to use an appropriate Error object to represent the error.
