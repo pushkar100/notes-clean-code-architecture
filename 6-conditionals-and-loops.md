@@ -514,3 +514,36 @@ These very small declarative additions to the Feature class enable us to write t
 
 > This doesn't mean our code is without control flow; rather, it means that the control flow is either minimized or hidden away under layers of abstractions. When using the native control flow constructs of the JavaScript language, it is important to remember that they are not your only tool with which to express the flow of a program; you can redirect and split complicated logic into abstractions that each handle a very specific part of your program's flow (Excerpt from "Clean Code in Javascript" by James Padolsey).
 
+## 14. Favor switch-case over if
+
+An `if` statement is good as long as there are only a few possible outcomes of a condition. Preferably two (An `if` and an `else`). 
+
+When the number of `if`s increase, it is better to use a `switch` so that it is less unwieldy (disorganized or functions inefficiently).
+
+```javascript
+// Bad!
+function doesSomething(value) {
+  if (value) {
+
+  } else if () {
+
+  } else if () {
+    
+  } else if () {
+    
+  } else {
+
+  }
+}
+```
+
+```javascript
+function doesSomething(value) {
+  switch(value) {
+    case 'A': {}
+    case 'B': {}
+    case 'C': {}
+    default: {}
+  }
+}
+```
