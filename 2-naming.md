@@ -506,16 +506,23 @@ app/
         |-- deepClone.js
 ```
 
-## 11. Use hungarian notation but only for specific cases
+## 11. Use Hungarian Notation but only for specific cases
 
 Hungarian notation prefixes or suffixes the tyepe of the value. Initally considered to be good for dynamically typed languages.
 
 This is a controversial guideline. Many people are against using hungarian notation to specify the type of a value because it adds **noise** and increases **code rigidity** (we may instead use methods like duck typing to prevent wrong types of objects being passed to it).
 
-- Don't use it for built in types
-- It may be okay to use it for domain or platform specific types. (Ex: A DOM element prefixed with `el` makes it very clear what type of value this is)
+1. Don't use it for built in types such as arrays, primitives, etc.
 
-Example:
+```javascript
+// Bad!
+const arrCitiesList = ['Pune', 'Bengaluru', 'Delhi']
+
+// Good!
+const citiesList = ['Pune', 'Bengaluru', 'Delhi']
+```
+
+2. It may be okay to use it for domain or platform specific types. (Ex: A DOM element prefixed with `el` makes it very clear what type of value it is)
 
 ```javascript
 // Bad!
@@ -523,6 +530,19 @@ const arrNames = ['Matt', 'Ram', 'Sita']
 
 // Good!
 const elHeader = document.getElementById('header') // How about `$header`?
+```
+
+3. Can use it to distinguish between two different adaptations of the same info!
+
+```javascript
+// OKAYISH example!
+// One is a configuration object & the other is a log:
+function getSanitizedConfigJSON(controller) {
+  const configObj = controller.getConfig()
+  // ...Some other processing...
+  const configJSON = JSON.stringify(configObj)
+  return sanitizeJSON(configJSON)
+}
 ```
 
 If you care too much about types and type checking in code, use a type checker tool like **typescript** or **flow**
