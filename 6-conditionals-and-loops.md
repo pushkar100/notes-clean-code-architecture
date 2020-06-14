@@ -415,3 +415,102 @@ function createBookStore(name) {
   const bookStoreName = name || "Generic Book Store";
 }
 ```
+
+## 12. Choose declarative programming over imperative
+
+- Imperative programming concerns itself with **how** something is accomplished 
+- Declarative programming concerns itself with **what** we want accomplished.
+
+```javascript
+// Bad! Imperative
+function getUnpaidInvoices(invoiceProvider) {
+  const unpaidInvoices = [];
+  const invoices = invoiceProvider.getInvoices();
+  for (var i = 0; i < invoices.length; i++) {
+    if (!invoices[i].isPaid) {
+      unpaidInvoices.push(invoices[i]);
+    }
+  }
+  return unpaidInvoices;
+}
+```
+
+The above code initializes an empty array, initializes a counter, checks that counter (multiple times) , and increments that counter (multiple times). Therefore, it is focusing on a lot of **ANNOYING IMPLEMENTATION DETAILS**
+
+```javascript
+// Good! Declarative
+function getUnpaidInvoices(invoiceProvider) {
+  return invoiceProvider.getInvoices().filter(invoice => {
+    return !invoice.isPaid;
+  });
+}
+```
+
+Using declarative programming, we have freed ourselves from the complexity of conventional control flow by using an abstraction.
+
+Declarative patterns have become the **STAPLE of modern JavaScript**. 
+
+- Do not have to worry about lower layers of abstraction (such as how to iterate). We can focus on business logic at our level of abstraction
+- There is some overlap, however, between declarative and imperative approaches. 
+- In declarative, you are dealing with a higher level of abstraction and less implementation details
+- On the imperative side of the spectrum, you are operating at a lower level of abstraction, utilizing lower-level imperative constructs to tell the machine what you want to accomplish
+
+**The benefits of a declarative approach**
+
+- Increased clarity for the human reader
+- Efficiently model complex problem domains.
+- Mind is free from implementation details (focused on goals)
+
+## 13. Use declarative programming by hiding/abstracting conditional and loop complexities
+
+Applies to a lot of **nested** conditionals and loops.
+
+```javascript
+// Bad!
+let featureIsEnabled = true;
+for (let i = 0; i < feature.flags.length; i++) {
+  if (feature.flags[i] === Feature.DISABLED_FLAG) {
+    featureIsEnabled = false;
+    break;
+  }
+}
+if (!featureIsEnabled) {
+  for (let i = 0; i < feature.enabledTimeSlots.length; i++) {
+    if (feature.enabledTimeSlots[i].isNow()) {
+      featureIsEnabled = true;
+      break;
+    }
+  }
+}
+if (featureIsEnabled) {
+  // Do the task.
+}
+```
+
+This is undesirably complex code. We only want to know if the feature is enabled so that we can do our task. Also, it deals with low level complexity (imperative)
+
+```javascript
+// Good!
+class Feature {
+  // (Other methods of the Feature class here,..)
+  _hasDisabledFlag() {
+    return this.flags.includes(Feature.DISABLED_FLAG);
+  }
+  _isEnabledTimeSlotNow() {
+    return this.enabledTimeSlots.filter(ts => ts.isNow()).length;
+  }
+  isEnabled() {
+    return !this._isDisabledFlag() && this._isEnabledTimeSlotNow();
+  }
+}
+
+// Usage:
+if (feature.isEnabled()) {
+  // Do the task.
+}
+```
+
+These very small declarative additions to the Feature class enable us to write the declarative code we were originally aiming for: `if (feature.isEnabled) { /* Do something */ }`
+
+> This doesn't mean our code is without control flow; rather, it means that the control flow is either minimized or hidden away under layers of abstractions. When using the native control flow constructs of the JavaScript language, it is important to remember that they are not your only tool with which to express the flow of a program; you can redirect and split complicated logic into abstractions that each handle a very specific part of your program's flow (Excerpt from "Clean Code in Javascript" by James Padolsey).
+
