@@ -41,7 +41,7 @@ Contains:
 
 **MVC Flow Diagram**
 
-![MVC Flow Diagram](images/mvc.drawio.svg?a=b)
+![MVC Flow Diagram](images/mvc-flow.drawio.svg?a=b)
 
 **Example of MVC to modify a count**
 
