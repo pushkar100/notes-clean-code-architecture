@@ -200,6 +200,8 @@ class MyClass extends mixin(alpha, bravo) {
 };
 ```
 
+The "base" class will always be a mixin. Therefore, its methods can always be overriden by our child class.
+
 **When should we use a constructor or a class pattern?**
 
 - Is the concept expressible as a noun (ex: people, place, or thing)? 
@@ -209,3 +211,68 @@ class MyClass extends mixin(alpha, bravo) {
 **When not to use a constructor or a class pattern?**
 
 If the concept you're abstracting does not fulfill any of the preceding three criteria, do not use it. An example of this may be a utility module that has various helper methods. Such a module may not require construction since it is essentially a collection of methods, and these methods and their behaviors would not vary between instances.
+
+## 2. Prototype pattern ("Object extension" / "No-constructor approach to prototypal inhertance" pattern)
+
+Instead of having classes or constructors and extending it, we can have plain objects (Object literals in Javascript `{}`)
+
+We use the object literal as a "template" and extend it without fussing about instantiation with `new` or worrying about prototype objects and so on (that we have to deal with in classes)
+
+```javascript
+const inputComponent = {
+  name: 'Input Component',
+  render() {
+    return document.createElement('input');
+  }
+};
+
+// Extensions:
+const inputA = Object.create(inputComponent);
+const inputB = Object.create(inputComponent);
+```
+
+We use `Object.create` to use the template object literal as the prototype object for the new object literal that is creates (for `inputA` and `inputB`)
+
+**Better way**
+
+We can add the extend functionality into the template object itself.
+
+```javascript
+const inputComponent = {
+  name: 'Input Component',
+  render() {
+    return document.createElement('input');
+  },
+  extend() {
+    return Object.create(this)
+  }
+};
+
+const inputA = inputComponent.extend();
+const inputB = inputComponent.extend();
+```
+
+**We can also override template object when extending it**
+
+We can override functionality of the template when extending it by using `Object.assign()`.
+
+```javascript
+const numericalInputComponent = Object.assign(
+  inputComponent.extend(), 
+  {
+    render() {
+      const input = InputComponent.render.call(this);
+      input.type = 'number';
+      return input;
+    }
+  }
+); 
+```
+
+**When do we use the prototype pattern over a class or constructor pattern?**
+
+Prototype pattern essentially does what a class or constructor does: Extend objects that have varying characteristics which can also be inherited from another object.
+
+However, use:
+- Prototype pattern for _simple_ use cases such as data changing minimally between objects or if the base data itself can be a simple object without needing a class. 
+- Class/constructor pattern for data that is not basic! Use it for object creation where they can be managed better via instantiation and so on. Classes for simple objects might be an _overkill_
