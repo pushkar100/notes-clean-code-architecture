@@ -779,6 +779,13 @@ _MAINTAINABILITY_ since it is closely linked to LoD (Law of Demeter)
 
 The question we need to ask with respect to LSP is: _What is the least information that this abstraction requires in order to fulfill its purpose?_
 
+### Having an eye for LSP (avoiding violations)
+
+1. Whenever we can consume different class objects or there is _inheritance_, lookout for the base class
+  - Is the abstraction correct? Do we have dissimilarities between base and derived class?
+
+LSP is named after Barbara Liskov who came up with the principle in 1988. The base type and derived type should not alter correctness of program when interchanged in the consumer code.
+
 ## 4. Interface Segregation Principle (ISP)
 
 JavaScript doesn't have interfaces so this principle doesn't apply as strictly as others. However, it's important and relevant even with JavaScript's lack of type system.
