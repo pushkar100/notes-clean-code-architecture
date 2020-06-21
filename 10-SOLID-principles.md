@@ -352,6 +352,190 @@ We are providing our custom `renderNotification` method in a configuration objec
 
 It is impossible to foresee all types of extensions.
 
+### An explanation of Open/Closed Principle with specifiers and combinators
+
+OCP: "Open for extension, Closed for modification". OCP provides us with _Modularity (separation of concerns)_
+
+**When is code change considered a modification?**
+
+When you edit a class to add, delete or update methods or properties. Other consumers might already be using this class and they might not need additional functionality. In a worse case, the functionality they depended upon has changed.
+
+**Why are modifications bad?**
+
+- They add to state space explosion. Your class signature keeps changing and eventually becomes a _GOD object_ that controls everything
+- GOD objects are bad because they become increasingly complex
+- Hence, it is not _maintainable_ nor _scalable_
+
+```javascript
+// Bad!
+class Product {
+  constructor(color, size) {
+    this.color = color
+    this.size = size
+  }
+}
+
+// The class in question
+class ProductFilter {
+  // Existing method
+  filterByColor(products) {
+
+  }
+
+  // Additional requirement has come in: filter by size!
+  filterBySize(products) {
+    // Added later
+  }
+
+  // One more requirement: filter by color and size!
+  filterByColorAndSize(products) {
+    // Added muchhh laterrr!
+  }
+
+  // More requirements keep coming
+  // ...
+  // state space explosion!
+}
+```
+
+**What code change results in an extension?**
+
+Typically means ***inheritance***. But, we can also have a combination of specifiers, combinators, and inheritance from abstract classes.
+
+**Specification pattern**
+
+It is a pattern where you remove the hardcoded criteria from an original class and create a _separate class for a criteria_ with its own methods.
+
+Objects of these specifiers are passed down to the methods of the original class. In this way, we don't have to modify the original class itself when new specifications (criteria) arises. 
+
+We can create new specification classes for more criteria, when the need arises, and change what is passed to the original class' method
+
+**Combinator pattern**
+
+Sometimes you may need to combine one or more specifications (criteria) so you create a class (again) to combine multiple specifications and pass this compound specification to the original class' method.
+
+Combinators deal only with creating combinations of specifications (SRP)
+
+Specifiers, combinators, and now the original function follow SRP (& thereby separation of concerns) and can be extended easily (by creating more of each)
+
+Note that _combinators are also specifiers_, just a compound type.
+
+```javascript
+// Good!
+class Product {
+  constructor(color, size) {
+    this.color = color
+    this.size = size
+  }
+}
+
+// Original class in question:
+class ProductFilter {
+  filter(products, specification) {
+    return products.filter(product => specification.isSatisfied(product))
+  }
+}
+
+// Specifiers:
+
+class ColorSpecification {
+  constructor(color) {
+    this.color = color
+  }
+
+  isSatisfied(product) {
+    return this.color === product.color
+  }
+}
+
+class SizeSpecification {
+  constructor(size) {
+    this.size = size
+  }
+
+  isSatisfied(product) {
+    return this.size === product.size
+  }
+}
+
+// Combinators:
+
+class AndSpecification {
+  constructor(...specifications) {
+    this.specifications = specifications
+  }
+
+  isSatisfied(product) {
+    return this.specifications.every(specification => specification.isSatisfied(product))
+  } 
+}
+
+class OrSpecification {
+  constructor(...specifications) {
+    this.specifications = specifications
+  }
+
+  isSatisfied(product) {
+    return this.specifications.some(specification => specification.isSatisfied(product))
+  }
+}
+
+// Usage:
+
+const bike = new Product('green', 'heavy')
+const car = new Product('blue', 'heavy')
+const scooty = new Product('yellow', 'medium')
+const cycle = new Product('green', 'light')
+const products = [bike, car, scooty, cycle]
+
+const greenSpecification = new ColorSpecification('green')
+const lightSpecification = new SizeSpecification('light')
+const greenAndLightSpecification = new AndSpecification(
+  greenSpecification, 
+  lightSpecification
+)
+const greenOrLightSpecification = new OrSpecification(
+  greenSpecification, 
+  lightSpecification
+)
+
+const productFilter = new ProductFilter()
+productFilter.filter(products, greenAndLightSpecification)
+// [ Product { color: 'green', size: 'light' } ]
+
+productFilter.filter(products, greenOrLightSpecification)
+// [
+//   Product { color: 'green', size: 'heavy' },
+//   Product { color: 'green', size: 'light' }
+// ]
+
+// Note: 
+
+/* An abstract class for a specifier can be like so: 
+class Specification { 
+  constructor() {
+    if (this.constructor.name === 'Specification') {
+      throw new Error('Cannot instantiate abstract class')
+    }
+  }
+  isSatisfied() {}
+} */
+```
+
+We can have one **"abstract class"** as base class for a specifier or combinator to inherit from as the abstract class provides an interface but has no implementation itself! However, in Javascript we do not have abstract classes natively.
+
+In Javascript:
+- Not implementing a method of an abstract class throws no error (Just a no-op)
+- Abstract classes can be instantiated (Although we can throw an error in constructor for it)
+
+Therefore, it is better to use _"duck typing"_ in the method that consumes a specifier / combinator. Mantra: "If it walks like a specifier and quacks like one too, it must be a specifier"
+
+**Exceptions: When is modification okay?**
+
+When you have no choice but to make it. For example, there is a bug in one of the methods.
+
+We should be careful not to break the existing contract between the class and consumer of this class. Also be careful if the class has already gone to production (live) earlier.
+
 ## 3. Liskov Substitution Principle (LSP)
 
 This is a scary term for a very simple concept. It's formally defined as **"If S is a subtype of T, then objects of type T may be replaced with objects of type S (i.e., objects of type S may substitute objects of type T) without altering any of the desirable properties of that program (correctness, task performed, etc.)."** That's an even scarier definition.
