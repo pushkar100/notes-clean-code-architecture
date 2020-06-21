@@ -165,9 +165,85 @@ _RELIABILITY_ and _EFFICIENCY_
 
 The SRP is not only about creating abstractions that are simple to use and maintain (like the Law of Demeter), it also allows us to write code that is more **focused** (by way of cohesiveness of an abstraction's methods and properties) on its key purpose.
 
+### SRP applied to classes
+
+A class and its methods should focus on one responsibility, not more! 
+
+```javascript
+// Bad!
+class Journal {
+  static journalCount = 0
+
+  constructor() {
+    this.journal = {}
+  }
+
+  addEntry() {}
+
+  removeEntry() {}
+
+  readJournal() {}
+
+  saveJournal() {}
+
+  loadJournal() {}
+}
+```
+
+A journal deals with adding, removing, and reading entries. How does it matter where and how we save a journal to or load it from?
+
+`saveJournal()` & `loadJournal()` violate SRP as they deal with persistent storage rather than with maintaining a journal. What if data to be stored is different from actual journal entry, what if storage types are configurable (filesystem, memory, etc). `Journal` class will have to deal with all of it and that's not cool!
+
+_A class should not have a secondary responsibility!_. Unrelated functionality may break when changes in one of the responsibilities needs to update
+
+We should not have **GOD classes** that do everything (anti-pattern)
+
+We can create a separate class for persistent storage, and journal can be passed as one type of data to store, as well as the type of storage to use
+
+```javascript
+// Good!
+class Journal {
+  static journalCount = 0
+
+  constructor() {
+    this.journal = {}
+  }
+
+  addEntry() {}
+
+  removeEntry() {}
+
+  readJournal() {}
+}
+
+class PersistentStorage {
+  constructor(documentType, storageType) {
+    this.documentType = documentType
+    this.storageType = storageType
+  }
+
+  save() {}
+
+  load() {}
+}
+
+// Usage:
+const journal = new Journal()
+const fileSystemJournalStore = new PersistentStorage('journal', 'fs')
+
+fileSystemJournalStore.save(journal)
+```
+
+### Having an eye for SRP (avoiding violations)
+
+1. Scan the methods of an entity (i.e class)
+  - If there are two responsibilities then the secondary responsibility can be its own class
+2. Having `and` in a function or class name indicates SRP violation
+  - Ex: `makeTeaAndAddSugar()` can be split into `makeTea()` and `addSugar()`
+
 ## 2. Open/Closed Principle (OCP)
 
-As stated by Bertrand Meyer, "software entities" (_classes_, _modules_, _functions_, etc.) should be **open for extension**, but **closed for modification**." What does that mean though? This principle basically states that you should allow users to add new functionalities without changing existing code.
+"Software entities" (_classes_, _modules_, _functions_, etc.) should be **open for extension**, but **closed for modification**." What does that mean though? This principle basically states that you should allow users to add new functionalities without changing existing code.
 
 ```javascript
 // Bad!
@@ -535,6 +611,20 @@ Therefore, it is better to use _"duck typing"_ in the method that consumes a spe
 When you have no choice but to make it. For example, there is a bug in one of the methods.
 
 We should be careful not to break the existing contract between the class and consumer of this class. Also be careful if the class has already gone to production (live) earlier.
+
+### Having an eye for OCP (avoiding violations)
+
+1. An `if-else` or `switch` statement. Ask yourself, "Will more cases need to be added in future?".
+  - In such a scenario, instead of cases, passing of the type to the entity might be better
+  - That is, is extension possible by passing any type of _configuration_ object?
+    - We can also write our class so that config object data can override to the default methods.
+  - Decision making is sent up a level i.e During method invocation and not inside the method itself!
+2. Is the base class we are inheriting from abstract enough? (`Shape/Rectangle/Square` example above)
+  - Make sure the abstraction's inheritance mechanism is extensible and not faulty!
+  - i.e Extension by inheritance must not have to modify abstract class / employ other workarounds
+3. Too many methods in a class that have similar functionality
+  - For example, the `ProductFilter` example above where
+  - We can have specifiers and combinators in this case
 
 ## 3. Liskov Substitution Principle (LSP)
 
