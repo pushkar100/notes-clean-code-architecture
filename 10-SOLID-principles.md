@@ -1022,7 +1022,7 @@ console.log(new UserISP("guest", "guest", false));
 
 We promote **decoupling** and possibly **reduce side effects**
 
-### Typescript interface example
+### Typescript `interface` example to explain ISP
 
 Typescript provides us with an explicit interface (think of an abstract class)
 
@@ -1064,6 +1064,12 @@ But what would happen if we also needed to implement a `AutonomousCar` class? Ob
 Let's say, for the sake of example, that we needed 20 new methods that are exclusively used by autonomous cars. In this situation, we should _segregate the interface into **smaller interfaces** that are more client specific_.
 
 i.e `VehicleInterface` is base class which is inherited by `AutonomousVehicleInterface`, `NonAutonomousVehicleInterface`, and so on.
+
+### Having an eye for ISP (avoiding violations)
+
+1. Lookout for initialization objects passed to functions (Ex: `settings`)
+  - The function must not be forced to incorporate settings that are optional
+  - Have a condition for the optional settings so that they integrate only when required
 
 ## 5. Dependency Inversion Principle (DIP)
 
