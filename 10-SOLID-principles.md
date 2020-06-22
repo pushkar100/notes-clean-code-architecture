@@ -779,10 +779,77 @@ _MAINTAINABILITY_ since it is closely linked to LoD (Law of Demeter)
 
 The question we need to ask with respect to LSP is: _What is the least information that this abstraction requires in order to fulfill its purpose?_
 
+**More explanation of LSP**
+
+Derived class objects must be substitutable for the base class objects. That means objects of the derived class must behave in a manner consistent with the promises made in the base class contract.
+
+Derived class objects should complement, not substitute base class behavior
+
+> LSP can also be described as a **counter-example of Duck Test**: "If it looks like a duck, quacks like a duck, but needs batteries – you probably have the wrong abstraction"
+
+```javascript
+// Bad!
+// Base class:
+class Duck {
+  constructor() {
+    // Duck initialization process
+  }
+
+  quack() {
+    return 'Quack';
+  }
+}
+
+// Derived class:
+// The only difference is that it needs batteries to operate.
+class MechanicalDuck extends Duck {
+  constructor(battery=null) {
+    super();
+    this._battery = battery;
+  }
+
+  quack() {
+    if(!this._battery) {
+      throw 'Need battery to operate.';
+    }
+    return 'Quack';
+  }
+}
+```
+
+If we use a mechanical duck instead of a duck and test it to quack, it will fail without supplying batteries! Mechanical duck does not extend the behavior of the base duck class properly!
+
+- Our derived classes can have other, newer methods
+- But they still have to implement that functionality of the base class
+- Base class functionality cannot be conditional and so on - the contract of the base class (with the consumer) must be preserved by the derived class as well!
+
+```javascript
+// Good!
+// FemaleDuck has other methods but also preserves the basic Duck contract
+class FemaleDuck extends Duck {
+  constructor() {
+    super();
+    // Initialization of female stuff
+    this._butt = new FemaleDuckButt();
+  }
+
+  // By protoypal inheritance, 
+  // it has a "quack()" 
+  // from base class.
+
+  // New method:
+  layAnEgg() {
+    const egg = this._butt.layAnEgg();
+    return egg;
+  } 
+}
+```
+
 ### Having an eye for LSP (avoiding violations)
 
-1. Whenever we can consume different class objects or there is _inheritance_, lookout for the base class
-  - Is the abstraction correct? Do we have dissimilarities between base and derived class?
+1. Whenever we can consume different class objects and there can be _inheritance_, lookout for the base!
+  - Is the abstraction correct? 
+  - Do we have dissimilarities between base and derived class?
 
 LSP is named after Barbara Liskov who came up with the principle in 1988. The base type and derived type should not alter correctness of program when interchanged in the consumer code.
 
@@ -854,7 +921,7 @@ const $ = new DOMTraverser({
 
 **Alternate explanation**
 
-ISP is closely linked to SRP: Cohesive, focused abstractoins
+ISP is closely linked to SRP: Cohesive, focused abstractions
 
 The approach is slightly different though. instead of making you consider the concept of responsibility itself, it makes you look at the interfaces that you're creating and consider whether they're appropriately segregated.
 
