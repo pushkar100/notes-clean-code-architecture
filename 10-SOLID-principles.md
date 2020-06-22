@@ -857,7 +857,13 @@ LSP is named after Barbara Liskov who came up with the principle in 1988. The ba
 
 JavaScript doesn't have interfaces so this principle doesn't apply as strictly as others. However, it's important and relevant even with JavaScript's lack of type system.
 
-ISP states that "Clients should not be forced to depend upon interfaces that they do not use." Interfaces are implicit contracts in JavaScript because of duck typing.
+ISP states that "Clients should not be forced to depend upon interfaces that they do not use." Interfaces are implicit contracts in JavaScript because of **duck typing**. We don't have real interfaces via abstract classes
+
+**Interface**
+
+The word interface is used to define an abstract class that contains no data but defines properties and methods of a class. It is also often used to describe the public methods and properties of a class.
+
+**ISP example**
 
 A good example to look at that demonstrates this principle in JavaScript is for **classes that require large settings objects**. **Not requiring clients to setup huge amounts of options is beneficial**, because most of the time they won't need all of the settings. Making them **optional** helps prevent having a "fat interface".
 
@@ -930,6 +936,134 @@ The approach is slightly different though. instead of making you consider the co
 - RELIABILITY: Having properly isolated interfaces that are truly decoupled makes code easier to test and verify, thereby aiding its general reliability and stability over time.
 - MAINTAINABILITY: Having segregated interfaces means that changes to one needn't affect the others
 - USABILITY: Having interfaces that are separated according to their purpose and function means that users are able to understand and navigate the interfaces with far less time and cognitive effort. The users are the consumers of our interfaces, and so are the most dependent on the interfaces being clearly delineated.
+
+### A look at ISP in Javascript
+
+Javascript does not have interfaces but this principle can still be used as:
+> Many client-specific interfaces are better than one general-purpose interface.
+
+An example of validating a user in all cases which might be unnecessary for say, a guest user:
+
+```javascript
+// Bad
+class User {
+  constructor(username, password) {
+    this.username = username;
+    this.password = password;
+    this.initiateUser();
+  }
+  initiateUser() {
+    this.username = this.username;
+    this.validateUser()
+  }
+
+  validateUser = (user, pass) => {
+    console.log("validating..."); //insert validation logic here!
+  }
+}
+const user = new User("Francesco", "123456");
+console.log(user);
+// validating...
+// User {
+//   validateUser: [Function: validateUser],
+//   username: 'Francesco',
+//   password: '123456'
+// }
+```
+
+We must validate only if necessary!
+
+```javascript
+// Good!
+//ISP: Validate only if it is necessary
+class UserISP {
+  constructor(username, password, validate) {
+    this.username = username;
+    this.password = password;
+    this.validate = validate;
+
+    if (validate) {
+      this.initiateUser(username, password);
+    } else {
+      console.log("no validation required"); 
+    }
+  }
+
+  initiateUser() {
+    this.validateUser(this.username, this.password);
+  }
+
+  validateUser = (username, password) => {
+    console.log("validating...");
+  }
+}
+
+//User with validation required
+console.log(new UserISP("Francesco", "123456", true));
+// validating...
+// UserISP {
+//   validateUser: [Function: validateUser],
+//   username: 'Francesco',
+//   password: '123456',
+//   validate: true
+// }
+
+
+//User with no validation required
+console.log(new UserISP("guest", "guest", false));
+// no validation required
+// UserISP {
+//   validateUser: [Function: validateUser],
+//   username: 'guest',
+//   password: 'guest',
+//   validate: false
+// }
+```
+
+We promote **decoupling** and possibly **reduce side effects**
+
+### Typescript interface example
+
+Typescript provides us with an explicit interface (think of an abstract class)
+
+```typescript
+interface Vehicle {
+  make: string;
+  numberOfWheels: number;
+  maxSpeed?: number;
+  getReachKm(fuel: number, kmPerLitre: number): number;
+}
+```
+
+A car implementing the typescript interface completely:
+
+```typescript
+class Car implements Vehicle {
+  make: string;
+  numberOfWheels: number;
+  maxSpeed: number;
+
+  constructor(make, numberOfWheels, maxSpeed) {
+    this.make = make;
+    this.numberOfWheels = numberOfWheels;
+    this.maxSpeed = maxSpeed;
+  }
+
+  getReachKm(fuel: number, kmPerLitre: number) {
+    return fuel * kmPerLitre;
+  }
+}
+
+const carObj = new Car("BMW", 4, 240);
+```
+
+In the above example, we only implemented the Vehicle interface with the Car class.
+
+But what would happen if we also needed to implement a `AutonomousCar` class? Obviously, our Vehicle interface would need some extra properties.
+
+Let's say, for the sake of example, that we needed 20 new methods that are exclusively used by autonomous cars. In this situation, we should _segregate the interface into **smaller interfaces** that are more client specific_.
+
+i.e `VehicleInterface` is base class which is inherited by `AutonomousVehicleInterface`, `NonAutonomousVehicleInterface`, and so on.
 
 ## 5. Dependency Inversion Principle (DIP)
 
