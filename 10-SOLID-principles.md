@@ -1078,7 +1078,7 @@ This principle states two essential things:
 - High-level modules should not depend on low-level modules. Both should depend on abstractions (that is, interfaces) 
 - Abstractions should not depend on details. Details (such as concrete implementations) should depend on abstractions
 
-This can be hard to understand at first, but if you've worked with AngularJS, you've seen an implementation of this principle in the form of Dependency Injection (DI). While they are not identical concepts, DIP keeps high-level modules from knowing the details of its low-level modules and setting them up. It can accomplish this through DI. A huge benefit of this is that it reduces the coupling between modules. Coupling is a very bad development pattern because it makes your code hard to refactor.
+This can be hard to understand at first, but if you've worked with AngularJS, you've seen an implementation of this principle in the form of Dependency Injection (DI). While they are not identical concepts, DIP _(1) keeps high-level modules from knowing the details of its low-level modules_ and _(2)setting them up_. It can accomplish this through DI. A huge benefit of this is that it _**reduces the coupling** between modules_. Coupling is a very bad development pattern because it makes your code hard to refactor.
 
 As stated previously, **JavaScript doesn't have interfaces so the abstractions that are depended upon are implicit contracts. That is to say, the methods and properties that an object/class exposes to another object/class**. In the example below, the implicit contract is that any Request module for an `InventoryTracker` will have a `requestItems` method.
 
@@ -1280,3 +1280,8 @@ class Calendar {
 The dependency inversion principle is similar to other principles that are related to the delineation of abstractions, such as the interface segregation principle, but is specifically concerned with dependencies and how these dependencies are directed. As we design and build abstractions, we are, implicitly, setting up a **"dependency graph"** (For example, `Calendar` depends on `Event` which depends on `EventLocationCalculator` which depends on two things: `DistanceCalculator` and `GeoCoder`).
 
 **Dependency graph** lets us observe where, if anywhere, our low-level implementations (details) impact our high-level abstractions. 
+
+### Having an eye for DIP (avoiding violations)
+
+- When a high level module is depending on a low-level module, ask if that low level module is abstract enough? If not, we can create an abstraction and the low level module can inherit from that while the high level module expects any implementation of that abstraction
+  - Ex: A `Person` class (HL) should not depend on `PersonRelationship` class (LL) and its methods such as `getChild`. Instead we should have an abstract class, `PersonBrowser` which is inherited by `PersonRelationship` and `Person` can expect to receive any PersonBrowser in constructor arguments.
