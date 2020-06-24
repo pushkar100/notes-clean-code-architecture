@@ -861,6 +861,8 @@ JavaScript doesn't have interfaces so this principle doesn't apply as strictly a
 
 ISP states that "Clients should not be forced to depend upon interfaces that they do not use." Interfaces are implicit contracts in JavaScript because of **duck typing**. We don't have real interfaces via abstract classes
 
+Interfaces implement the **YAGNI** (You ain't gonna need it) philosophy. It means that we shouldn't be adding things that people are not going to be needing and force them to use it
+
 **Interface**
 
 The word interface is used to define an abstract class that contains no data but defines properties and methods of a class. It is also often used to describe the public methods and properties of a class.
