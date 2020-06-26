@@ -530,7 +530,7 @@ Certain array methods:
 - `map`: Changes the shape but not the size of the array. Maps every value in array to another
 - `sort`: Changes the order
 - `filter`: Changes the size. Filters out the array based on return value of callback
-- `find`: Changes size to exactly one. Returns an array item if it matches condition in callback
+- `find`: Changes size to exactly one. Returns an array item if it matches condition in callback. _Use find over filter when you want to get the first match. It is similar to a `break` statement in a loop_
 - `forEach`: Changes nothing. Only uses the shape
 - `reduce`: Changes both size and shape to anything you want it to be
 
@@ -542,6 +542,8 @@ Boolean functions:
 Convert to strings:
 
 - `join`: Returns a string with the array elements joined by a specified delimiter
+
+**Note**: For succinctness and readability, we generally write the method callbacks using ***arrow functions***
 
 **Examples**
 
@@ -630,11 +632,58 @@ const employeeCounts = employees.reduce(employeesCountReducer, {})
 Predictability with `map` function:
 - We know it will return an array
 - We know that it will return an array of the same size as the original
-- By the identifier (variable) it is assigned to, we can know the type of mapping it is making
+- By the identifier (variable) it is assigned to, we can know the type of mapping it is making🙌
 
 **What about performance?**
 
 For loops and only micro-optimized over array methods. Modern compilers even optimize the methods. Not a significant change for regular apps (Ex: React apps)
+
+**Drawback of array methods**
+
+All these array methods take only one argument (actually, they also have index and original array as the 2nd and 3rd arguments, respectively) and it is very hard for us to pass something to the function.
+
+Consider the example where you have campaign managers of a politician for every district. You want to find the name of the manager given a district
+
+```javascript
+// Good but can be better!
+const campaignManagers = [
+  { name: 'Lokesh', city: 'Delhi' },
+  { name: 'Ramesh', city: 'Bhopal' },
+  { name: 'Sanya', city: 'Bengaluru' },
+  { name: 'Tanya', city: 'Mysuru' }
+]
+
+const getCampaignManagerForCity = (campaignManagers, city) => {
+  const findCampaignManagerByCity = campaignManager => campaignManager.city === city
+  return campaignManagers.find(findCampaignManagerByCity)
+}
+
+getCampaignManagerForCity(campaignManagers, 'Bengaluru')
+```
+
+**Solution**: The technique of ***currying*** comes to our rescue! We can have partial application using one argument and provide the rest of the params at a later stage. The way you would implement currying is to have a function that takes in the intial argument. It returns a function that contains the business logic. Now this function can take in the rest of the parameters
+
+```javascript
+// Best!
+const campaignManagers = [
+  { name: 'Lokesh', city: 'Delhi' },
+  { name: 'Ramesh', city: 'Bhopal' },
+  { name: 'Sanya', city: 'Bengaluru' },
+  { name: 'Tanya', city: 'Mysuru' }
+]
+
+const campaignManagersFilter = (prop, value) => campaignManager => {
+  return campaignManager[prop] === value
+}
+
+const findCampaignManager = (campaignManagers, prop, value) => {
+  return campaignManagers.find(campaignManagersFilter(prop, value))
+}
+
+// Extensible!
+findCampaignManager(campaignManagers, 'city', 'Bengaluru') // {name: "Sanya", city: "Bengaluru"}
+findCampaignManager(campaignManagers, 'name', 'Tanya') // { name: 'Tanya', city: 'Mysuru' }
+```
 
 ## 13. Use declarative programming by hiding/abstracting conditional and loop complexities
 
