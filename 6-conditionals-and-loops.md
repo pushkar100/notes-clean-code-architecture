@@ -685,6 +685,14 @@ findCampaignManager(campaignManagers, 'city', 'Bengaluru') // {name: "Sanya", ci
 findCampaignManager(campaignManagers, 'name', 'Tanya') // { name: 'Tanya', city: 'Mysuru' }
 ```
 
+**When should we use `forEach`?**
+
+Use it only when you have to do something outside the scope of the function. That is, when you need to cause a _side effect_! An example of this would be to send an email to every user in the list. We will have a `sendEmail` function outside the scope.
+
+Why should side effects related to array usage use `forEach`?
+- Adds predictability. When you use `forEach`, you know that it is for a side effect
+- `forEach` can be used just like other array methods. Hence, it can be chained!
+
 ## 13. Use declarative programming by hiding/abstracting conditional and loop complexities
 
 Applies to a lot of **nested** conditionals and loops.
