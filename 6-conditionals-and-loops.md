@@ -573,6 +573,7 @@ function greetTheAdults(people) {
 
 ```javascript
 // Good!
+// forEach example
 const names = ['Ram', 'Lakshmana', 'Sita', 'Sidharth']
 const minLength = 5
 const longFunkyNames = []
@@ -600,6 +601,7 @@ longFunkyNames // ["lAkShMaNa", "sIdHaRtH"]
 
 ```javascript
 // Good!
+// reduce example
 const EMPLOYEE_TYPES = Object.freeze({
   MANAGER: 'manager',
   SUPERVISOR: 'supervisor',
@@ -624,6 +626,11 @@ const employeeCounts = employees.reduce(employeesCountReducer, {})
 {manager: 1, supervisor: 2, employee: 2}
 */
 ```
+
+Predictability with `map` function:
+- We know it will return an array
+- We know that it will return an array of the same size as the original
+- By the identifier (variable) it is assigned to, we can know the type of mapping it is making
 
 **What about performance?**
 
