@@ -35,7 +35,7 @@ function bookRegular (customer) {
 }
 ```
 
-## 2. Encapsulate Conditionals (into a separate function)
+## 2. Encapsulate conditionals into separate boolean functions
 
 Don’t make me think! Please encapsulate the conditions in a function that has semantic value
 
@@ -416,6 +416,28 @@ function createBookStore(name) {
 }
 ```
 
+We can even short-circuit using **`&&`** to avoid **"TypeError"**
+
+Imagine fetching the first image from a user config. Only if the images property exists and is an array do you want to fetch the image else undefined. This is important because if we try to fetch the first index of a non-array, we'll get an error like "Cannot read property/index of undefined"
+
+```javascript
+// Bad!
+function getFirstUserImage(userConfig) {
+  if (userConfig.images) {
+    return userConfig.images[0] // Not testing if "images" is an array
+  }
+}
+```
+
+```javascript
+// Good!
+function getFirstUserImage(userConfig) {
+ return (userConfig.images && user.images.length) 
+  ? userConfig.images[0] 
+  : undefined
+}
+```
+
 ## 12. Choose declarative programming over imperative
 
 - Imperative programming concerns itself with **how** something is accomplished 
@@ -701,3 +723,36 @@ function getSalary(employee) {
 const salary = getSalary(employee)
 ```
 
+## 18. Abstract many `if-else` into small functions
+
+How many conditionals is too many? The answer is that is depends since it is subjective. However, as a thumbrule, 3 (`if-elseif-else`) or more can be quite hard to read when compared to when its abstracted to a function with a meaningful name
+
+```javascript
+// Bad!
+let sides
+if (order.burger) {
+  sides = 'fries'
+} else if (order.pizza) {
+  sides = 'garlic bread'
+} else {
+  sides = 'none'
+}
+```
+
+```javascript
+// Good!
+function getSidesForOrder(order) {
+  if (order.burger) {
+    return 'fries
+  }
+  if (order.pizza) {
+    return 'garlic bread'
+  }
+  return 'none'
+}
+
+// We didn't reduce the number of if-else
+// But we abstracted it away
+// so that consumer code is readable (meaning via naming)
+const sides = getSidesForOrder(order)
+```
