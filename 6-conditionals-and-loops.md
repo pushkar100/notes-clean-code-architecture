@@ -483,6 +483,152 @@ Declarative patterns have become the **STAPLE of modern JavaScript**.
 - Efficiently model complex problem domains.
 - Mind is free from implementation details (focused on goals)
 
+### Application of declarative programming: Use Array methods over for/while/do-while loops
+
+**Why?**
+
+To remove _clutter_ and to make the code more _readable_ (because it will be more declarative). In normal loops, you have a lot of extra variables, extraneous code, and is less predicatable (again, since it is imperative and not declarative)
+
+```javascript
+// Bad! Too imperative!
+// Filter items, map the remaining to a string, and reduce it to a message:
+function greetTheAdults(people) {
+  const adults = []
+  for (let i = 0; i < people.length; i++) {
+    const person = people[i]
+    if (person.age >= 18) {
+      adults.push(person)
+    }
+  }
+
+  const namesOfAdults = []
+  for (let i = 0; i < adults.length; i++) {
+    const adult = adults[i]
+    namesOfAdults.push(adult.name)
+  }
+
+  let message = "Welcome "
+  for (let i = 0; i < names.length; i++) {
+    const name = names[i]
+    if (i !== names.length - 1) {
+      message += `${name}, `
+    } else {
+      message += `${name}`
+    }
+  }
+
+  displayMessage(message)
+}
+```
+
+Certain array methods:
+1. **Do not mutate** the original array!
+2. Can be **chained**!
+
+**Common array methods that can substitute loops:**
+
+- `map`: Changes the shape but not the size of the array. Maps every value in array to another
+- `sort`: Changes the order
+- `filter`: Changes the size. Filters out the array based on return value of callback
+- `find`: Changes size to exactly one. Returns an array item if it matches condition in callback
+- `forEach`: Changes nothing. Only uses the shape
+- `reduce`: Changes both size and shape to anything you want it to be
+
+Boolean functions:
+
+- `some`: Returns `true` if at least some of the array items pass the condition in the callback
+- `every`:Returns `true` only if all the array items pass the condition in the callback
+
+Convert to strings:
+
+- `join`: Returns a string with the array elements joined by a specified delimiter
+
+**Examples**
+
+```javascript
+// Good! Declarative
+// Filter items, map the remaining to a string, and reduce it to a message:
+function greetTheAdults(people) {
+  const isAdult = person => person.age >= 18
+  const getNameOfPerson = person => person.name
+  const commaDelimiter = ', '
+  const greetStart =  "Welcome"
+
+  const greeting = people
+    .filter(isAdult)
+    .map(getNameOfPerson)
+    .join(commaDelimiter)
+
+  displayMessage(`${greetStart} ${greeting}`)
+}
+```
+
+**Loop substitutes**
+
+- Create arrays of a similar size with `map` (1:1 mapping)
+- Pull out subsets of data with `filter` and `find`
+- Combine methods with chaining
+- Apply consistent actions with `forEach`
+- Transform array data with `reduce`
+
+```javascript
+// Good!
+const names = ['Ram', 'Lakshmana', 'Sita', 'Sidharth']
+const minLength = 5
+const longFunkyNames = []
+
+names.forEach(name => {
+  if (name.length < minLength) {
+    return
+  }
+
+  const isEvenIndex = index => index % 2 === 0
+  const funkyName = name
+    .split('')
+    .map((char, index) => 
+      isEvenIndex(index) 
+        ? char.toLowerCase()
+        : char.toUpperCase()
+    )
+    .join('')
+    
+  longFunkyNames.push(funkyName)
+})
+
+longFunkyNames // ["lAkShMaNa", "sIdHaRtH"]
+```
+
+```javascript
+// Good!
+const EMPLOYEE_TYPES = Object.freeze({
+  MANAGER: 'manager',
+  SUPERVISOR: 'supervisor',
+  EMPLOYEE: 'employee'
+})
+const employees = [
+  { name: 'A', type: EMPLOYEE_TYPES.MANAGER },
+  { name: 'A', type: EMPLOYEE_TYPES.SUPERVISOR },
+  { name: 'A', type: EMPLOYEE_TYPES.EMPLOYEE },
+  { name: 'A', type: EMPLOYEE_TYPES.EMPLOYEE },
+  { name: 'A', type: EMPLOYEE_TYPES.SUPERVISOR }
+]
+const employeesCountReducer = (employeeCountObj, employee) => {
+  employeeCountObj[employee.type] = employeeCountObj[employee.type] ? 
+    employeeCountObj[employee.type] + 1 
+    : 1
+  return employeeCountObj
+}
+
+const employeeCounts = employees.reduce(employeesCountReducer, {})
+/*
+{manager: 1, supervisor: 2, employee: 2}
+*/
+```
+
+**What about performance?**
+
+For loops and only micro-optimized over array methods. Modern compilers even optimize the methods. Not a significant change for regular apps (Ex: React apps)
+
 ## 13. Use declarative programming by hiding/abstracting conditional and loop complexities
 
 Applies to a lot of **nested** conditionals and loops.
