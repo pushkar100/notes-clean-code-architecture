@@ -978,3 +978,14 @@ function getSidesForOrder(order) {
 // so that consumer code is readable (meaning via naming)
 const sides = getSidesForOrder(order)
 ```
+
+## 19. Use `for..of` & `for..in` loops only if array methods are insufficient
+
+- `for..of` loops take a data type with an iterator and use that to loop over elements
+- `for..in` loops take one property at a time from the object. 
+
+Array methods are sufficient in most cases. Start with array methods, simple ones such as find/filter/etc. For complex use cases, use reduce. If that also does not suffice, use `for..of` and `for..in`.
+
+- Method 1: Traverse keys of an object - `Object.keys(obj)` will give an array of keys (Use array methods or `for..of`)
+- Method 2: Map has an iterator, so we can use `for..of` directly. We can also convert it to an array with `[...someMap]` to use it as an array
+- Method 3: Use `for..in` for objects
