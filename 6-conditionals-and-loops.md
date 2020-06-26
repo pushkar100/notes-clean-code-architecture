@@ -698,6 +698,13 @@ Why should side effects related to array usage use `forEach`?
 - It has an overhead with more looping and function context switching. However, this only matters if you are dealing with very large data sets. For regular use cases, place readability over micro-performance increase.
 - The order of chaining matters
 
+**Array `reduce` method caveats**
+
+- It is very flexible! Use simpler methods like map, find, and filter if possible
+- When you use reduce, it means that you have exhausted other options
+
+_Exercise:_ Try implementing `filter`, `find`, and `map` with `reduce`. It's possible! You will understand the power of a reduce method!
+
 ## 13. Use declarative programming by hiding/abstracting conditional and loop complexities
 
 Applies to a lot of **nested** conditionals and loops.
