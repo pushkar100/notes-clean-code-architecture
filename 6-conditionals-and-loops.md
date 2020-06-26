@@ -657,3 +657,47 @@ Benefits of the above code:
 
 - We can test each individual abstraction separately. Ex: test `getIDFields` on its own
 - We have extracted repeated logic (Ex: Doing `indexOf` everytime) and generalized it (DRY principle)
+
+## 16. Use Ternary operators for quick if-else checks
+
+They help cut down the number of variables being re-assigned. They add more **predictability** to the value of a variable which otherwise requires more effort to scan through if-else. No reassignments required
+
+```javascript
+// Bad!
+let salary
+if (employee.isManager) {
+  salary = 100000
+} else {
+  salary = 50000
+}
+
+// Good!
+const salary = employee.isManager ? 100000 : 50000
+```
+
+## 17. Do not chain ternary expressions together
+
+Ternaries lose simplicity. This is as bad as having if else and complex conditionals. For such things, it makes sense to abstract them away into small, non-abstract functions that follow SRP (and are testable)
+
+```javascript
+// Bad!
+const salary = employee.isManager ? 
+  100000
+  : employee.isSupervisor ? 
+    75000
+    : 50000
+
+// Good!
+function getSalary(employee) {
+  if (employee.isManager) {
+    return 100000
+  }
+  if (employee.isSupervisor) {
+    return 75000
+  }
+  return 50000
+}
+
+const salary = getSalary(employee)
+```
+
