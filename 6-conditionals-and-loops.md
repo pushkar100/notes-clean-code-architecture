@@ -607,10 +607,10 @@ const EMPLOYEE_TYPES = Object.freeze({
 })
 const employees = [
   { name: 'A', type: EMPLOYEE_TYPES.MANAGER },
-  { name: 'A', type: EMPLOYEE_TYPES.SUPERVISOR },
-  { name: 'A', type: EMPLOYEE_TYPES.EMPLOYEE },
-  { name: 'A', type: EMPLOYEE_TYPES.EMPLOYEE },
-  { name: 'A', type: EMPLOYEE_TYPES.SUPERVISOR }
+  { name: 'B', type: EMPLOYEE_TYPES.SUPERVISOR },
+  { name: 'C', type: EMPLOYEE_TYPES.EMPLOYEE },
+  { name: 'D', type: EMPLOYEE_TYPES.EMPLOYEE },
+  { name: 'E', type: EMPLOYEE_TYPES.SUPERVISOR }
 ]
 const employeesCountReducer = (employeeCountObj, employee) => {
   employeeCountObj[employee.type] = employeeCountObj[employee.type] ? 
