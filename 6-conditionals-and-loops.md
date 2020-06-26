@@ -693,6 +693,11 @@ Why should side effects related to array usage use `forEach`?
 - Adds predictability. When you use `forEach`, you know that it is for a side effect
 - `forEach` can be used just like other array methods. Hence, it can be chained!
 
+**Array method chaining caveats**
+
+- It has an overhead with more looping and function context switching. However, this only matters if you are dealing with very large data sets. For regular use cases, place readability over micro-performance increase.
+- The order of chaining matters
+
 ## 13. Use declarative programming by hiding/abstracting conditional and loop complexities
 
 Applies to a lot of **nested** conditionals and loops.
