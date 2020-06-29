@@ -870,3 +870,153 @@ const double = multiply(2);
 double(3);      // => 6
 multiply(2, 3); // => 6
 ```
+
+## 16. Cleaner parameters with default args, destructuring, and rest params
+
+The usage of the 3 techniques gives us very **predictable** code
+
+**Default arguments**
+
+- They help give placeholder values whenever the actual value is missing
+- The placeholder value gives a hint on what data type is expected
+
+```javascript
+// Bad!
+function convertCurrency = (value, conversionRate) => {
+  conversionRate = conversionRate || 1
+  return value * conversionRate
+}
+convertCurrency(100) // 100
+```
+
+```javascript
+// Good!
+function convertCurrency = (value, conversionRate = 1) => {
+  return value * conversionRate
+}
+convertCurrency(100) // 100
+```
+
+**Destructuring**
+
+- Destructuring can happen inside function arguments' list or outside it
+    - If it happens inside arguments, it is better for readability & preditable code
+- Can use a single object param instead of an ever-growing list of arguments (order does not matter)
+- Can assign key to variable of the same name
+- Can also assign key to variable of a different name
+- Can destructure arrays as well (but the order matters)
+
+```javascript
+// Bad!
+function saveCityAndState(location) {
+  const latitude = location.latitude
+  const longitude = location.longitude
+  // ...
+}
+```
+
+```javascript
+// Good!
+function saveCityAndState({ latitude, longitude }) {
+  // ...
+}
+```
+
+```javascript
+// Good!
+// Default values (as Bengaluru coordinates) within a destructure
+function saveCityAndState({ latitude = 12.97, longitude = 77.59 }) {
+  // ...
+}
+```
+
+```javascript
+// Good!
+// Renaming destructured values
+function saveCityAndState({ lat: latitude, long: longitude }) {
+  long // Error - not available
+  longitude // Accessible ☑
+  // ...
+}
+```
+
+The major benefit of objects as parameters is that we can have **extensible** functions:
+
+```javascript
+// Bad!
+function foo(param1, param2, param3) {
+
+}
+
+// If 2nd argument is not passed, it needs to 
+// have undefined as placeholder
+foo(param1, undefined, param3)
+```
+
+```javascript
+// Good!
+function foo(param1, options) {
+  const { param2, param3 } = options
+}
+```
+
+**Rest parameters**
+
+- It is useful when we have _**an unknown number of similar arguments**_
+- We do not have to force consumer of code to pass in an array!
+- It is a great way to pass props if you do not plan on altering them (If you do, use objects and the destructuring approach)
+
+_The rest operator has to be the last argument!_
+
+```javascript
+// Bad!
+// Cannot even extend the function without modifying it
+function validateCharacterCount(max, item1, item2, item3) {
+  if (item1.length > max) { return false }
+  if (item2.length > max) { return false }
+  if (item2.length > max) { return false }
+  return true
+}
+validateCharacterCount(5, "sugar", "watermelon", "fig", /* Not even considered -> */ "apple")
+
+// Also bad but better!
+// Forcing consumer to send an array of similar params
+// instead of appending them to the list
+function validateCharacterCount(max, itemsList) {
+  return itemsList.every(item => item.length < max)
+}
+validateCharacterCount(5, ["sugar", "watermelon", "fig"])
+```
+
+```javascript
+// Good!
+function validateCharacterCount(max, ...items) {
+  return items.every(item => item.length < max)
+}
+validateCharacterCount(5, "sugar", "watermelon", "fig")
+// If consumer has a list already, they can "spread" it out:
+const fruitList = ["mango", "watermelon", "fig"]
+validateCharacterCount(5, ...fruitList)
+```
+
+**Note:** 
+
+We can use rest parameters inside object and array destructuring to get the remaining key/values as a separate object:
+
+```javascript
+// Bad!
+function savePhotoLocationData(photo) {}
+```
+
+```javascript
+// Good!
+function savePhotoLocationData({ 
+  coordinates,
+  city,
+  state,
+  ...additionalData
+}) {
+  // Additional data can be used if required
+  // It will not contain coordinates, city, state
+}
+```
