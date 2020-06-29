@@ -1213,3 +1213,8 @@ _**Repetition** is a clue that a natural division exists within the function_ an
 
 - When the context is not important (i.e it must not change, lexically speaking) we must use arrow functions
 - However, if we are writing classes and the context can be _dynamic_ (such as react class methods) then it is imperative to preserve the context. In this case, do _not_ use arrow functions. Use function expressions instead
+
+Reasons to use arrow functions heavily:
+- Readability
+- Predictability (always know what is returned)
+- Great for composing higher order functions: partial applications and currying
