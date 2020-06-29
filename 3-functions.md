@@ -706,6 +706,8 @@ export default {
 
 4. **Use function expressions where `this` is dynamic (a.k.a Do not use arrow functions)**
 
+This is usually applied to **class methods** such as _React class components_.
+
 Limitations of arrow functions:
 
 - It does not provide access to bindings such as `this` or `arguments`
@@ -1020,3 +1022,194 @@ function savePhotoLocationData({
   // It will not contain coordinates, city, state
 }
 ```
+
+## 17. Flexible functions: Testable function using dependency injection
+
+Coupling is the degree of interdependence between software modules
+
+If a function directly depends on another piece of data or functionality outside of its scope, it is said to have a tighter coupling with that piece. It is bad most of the time because it reduces flexibility and reusability of code, makes changes much more difficult,impedes testability etc.
+
+Tightly coupled functions are bad! One of the main reasons is that it is hard to test such functions. Testing is important - it makes code easy to refactor.
+
+**Dependency injection**: Instead of tightly coupling the dependency with the function, it is passed as an argument! In this way, we don't have to mock or stub the dependency but pass it into the function like any other value
+
+**Too many stubs and mocks?** Although it is inevitable to have some mocks/stubs in code, too many of them is a **code smell**! It is a clue that your code is tightly coupled and complex. We must simplify it (& dependency injection is one of the ways)
+
+```javascript
+// Bad! Tightly coupled
+// "./currency-converter.js"
+
+import { fetchConversionRate } from './utils'
+
+function currencyConverter(amount, from, to) {
+  // ...
+  const convertedAmount = amount * fetchConversionRate(from, to) // Tight coupling
+  // ...
+  return convertedAmount
+}
+
+currencyConverter(100, '$', 'Rs')
+```
+
+```javascript
+// Testing "currencyConverter":
+// ./currency-converter.test.js
+
+import currencyConverter from './currency-converter'
+import utils from './utils' // Have to also import the dependency
+
+it("Should return 0 if conversion rate is 0", () => {
+  const fetchConversionRate = jest.fn(utils, "fetchConversionRate")
+  expect(currencyConverter(100, '$', 'Rs')).toBe(0)
+})
+```
+
+By injecting the dependency, we get better code! Easily testable code.
+
+```javascript
+// Good!
+import { fetchConversionRate } from './utils'
+
+function currencyConverter(amount, { from, to, converter }) {
+  // ...
+  const convertedAmount = amount * fetchConversionRate(from, to) // Tight coupling
+  // ...
+  return convertedAmount
+}
+
+currencyConverter(100, { 
+  from: '$', 
+  to: 'Rs',
+  converter: fetchConversionRate
+})
+```
+
+```javascript
+// Testing "currencyConverter"
+// ./currency-converter.test.js
+
+import currencyConverter from './currency-converter'
+// Importing the dependency from "utils" is not necessary
+
+it("Should return 0 if conversion rate is 0", () => {
+  const zeroReturningConverter = () => 0
+  expect(currencyConverter(100, {
+    from: '$', 
+    to: 'Rs',
+    converter: zeroReturningConverter
+  })).toBe(0)
+})
+```
+
+## 18. Flexible functions: Single responsibility (partial application & currying with array methods)
+
+Functions must have a single responsibilty and they must be of a single level of abstraction. Partial application and currying help with it
+
+Both partial application and currying are **higher-order functions** i.e functions returning other functions so they need to be called multiple times before they are fully resolved. 
+
+Higher order functions are good for writing testable code and moreover, **reusable** code! They are reusable because we start off with the baseline requirements for a function, and for every new function it returns, we add more requirements. Therefore, it starts of with a generic function which is built upon by more specific functions
+
+_The following are the ways to break up functions of higher arity and supply arguments as and when needed instead of knowing everything beforehand_
+
+**Partial application**: A partially applied function reduces the total number of arguments for a function (known as "arity") while giving you back a function that takes in fewer arguments.
+
+We mostly use _arrow functions_ for readability i.e to remove extraneous information
+
+```javascript
+// Bad!
+function createEvent(location, owner, date, time) {
+  return {
+    ...location,
+    owner,
+    date,
+    time
+  }
+}
+
+createEvent("Bengaluru", "Brad", "10-07-20", "4pm")
+createEvent("Bengaluru", "Bob", "10-11-20", "10am")
+
+// Two problems:
+// 1. Function needs to know a lot of things: location, owner, & time
+// 2. Repetition
+```
+
+We can create a _higher order function_ using partial application. Our baseline function can be related to the location
+
+```javascript
+// Good!
+function createLocationSpecificEvent(location, owner) {
+  return (date, time) => ({
+    ...location,
+    owner,
+    date,
+    time
+  })
+}
+
+const createBengaluruEvent = createLocationSpecificEvent("Bengaluru", "Brad")
+createBengaluruEvent("10-07-20", "4pm")
+createBengaluruEvent("10-11-20", "10am")
+
+// Solved one problem:
+// 1. Reusable, SRP function
+
+// A problem that still persists:
+// 1. Repetition (of createBengaluruEvent) - not exactly reusable! What if owner changed?
+```
+
+**Currying**: Currying is similar to partial application but instead of taking partial arguments and returning a function, it takes _exactly one_ argument and returns a series of functions that each return a function taking in one argument until it is fully resolved. Hence, arity is always 1
+
+**Why currying?**
+
+A higher-order functions with hardcoded parameters are less flexible than a function that takes in one argument at a time and partially applies it serially!
+
+Currying helps avoid repetition.
+
+```javascript
+// Good!
+const createEvent = location => owner => date => time => ({
+  ...location,
+  owner,
+  date,
+  time
+})
+
+const bangaloreEvent = createEvent("Bangalore")
+const createBradEvent = bangaloreEvent("Brad")
+eventsUnderBrad("10-07-20")("4pm")
+
+const mumbaiEvent = createEvent("mumbai") // similar reusability
+
+// Super testable!
+// No repetition - completely reusable
+```
+
+Currying works really well with functions that use _array methods_ for the return value (We pass in the callback to the one of the functions)
+
+```javascript
+// Bad!
+const filterUsers = (users, field, value) => {
+  return users.filter(user => user[field] === value)
+}
+
+// A highly restrictive function!
+// Need to know everything before hand
+// Adds to repetition
+```
+
+```javascript
+// Good!
+const filterListOfObjects = field => value => users => users.fitler(user => user[field === value])
+
+const matchByAge = filterListOfObjects("age")
+const matchAboveAge18 = matchByAge(18)
+const usersAboveAge18 = matchAboveAge18(users)
+```
+
+_**Repetition** is a clue that a natural division exists within the function_ and that we can break it down further
+
+## 19. Flexible functions: Avoid context (`this`) confusion with arrow functions
+
+- When the context is not important (i.e it must not change, lexically speaking) we must use arrow functions
+- However, if we are writing classes and the context can be _dynamic_ (such as react class methods) then it is imperative to preserve the context. In this case, do _not_ use arrow functions. Use function expressions instead
